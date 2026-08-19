@@ -1,0 +1,18 @@
+{
+  // Cloudflare Workers config for the funnel. Deployed on the
+  // member's own Cloudflare account, free tier, standalone subdomain
+  // (e.g. quiz.theirdomain.com added as a custom domain in the
+  // Cloudflare dashboard or via routes below).
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "digital-home-funnel",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  }
+  // Secrets (never in this file):
+  //   npx wrangler secret put FUNNEL_BACKEND_URL
+  //   npx wrangler secret put FUNNEL_SECRET
+}
