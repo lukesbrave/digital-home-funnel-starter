@@ -12,6 +12,7 @@
  * Components and lib code never need to change.
  */
 import type { CtaConfig, OptInConfig } from '@/lib/types';
+import type { ThemeTokens } from '@/themes';
 
 /** Shown in the browser tab and used as the CRM source tag. */
 export const FUNNEL_NAME = 'The Brand Momentum Quiz';
@@ -23,19 +24,18 @@ export const FUNNEL_NAME = 'The Brand Momentum Quiz';
 export const FUNNEL_SLUG = 'brand-momentum';
 
 /**
- * Palette tokens, injected as CSS variables in layout.tsx.
- * The template design consumes only these tokens, so a palette swap
- * restyles the whole funnel coherently.
+ * The theme: one value. Ships with 'clean' (default, quiet sans,
+ * fits most brands), 'manuscript' (warm editorial serif), and
+ * 'signal' (dark, bold, one loud accent). Screenshots of each live
+ * in previews/. Themes are defined in src/themes/.
  */
-export const PALETTE = {
-  background: '#faf9f7',
-  surface: '#ffffff',
-  border: '#e4e1db',
-  ink: '#1a1916',
-  muted: '#6f6a61',
-  accent: '#1d4ed8',
-  accentInk: '#ffffff',
-};
+export const THEME: 'clean' | 'manuscript' | 'signal' = 'clean';
+
+/**
+ * Optional per-funnel token overrides on top of the theme, for
+ * brand tinting (e.g. swap the accent). Usually left empty.
+ */
+export const PALETTE_OVERRIDES: Partial<ThemeTokens> = {};
 
 /** The opt-in gate between the last question and the results. */
 export const OPT_IN: OptInConfig = {

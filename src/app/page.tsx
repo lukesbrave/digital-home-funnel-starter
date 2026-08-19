@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import LandingPage from '@/components/LandingPage';
 import QuizStep from '@/components/QuizStep';
 import OptInStep, { OptInValues } from '@/components/OptInStep';
@@ -127,16 +126,14 @@ export default function Home() {
     trackEvent('cta_click', { data: { archetype: result?.archetype.id } });
   };
 
+  // No AnimatePresence here on purpose: mode="wait" exit gating can
+  // wedge under prefers-reduced-motion, leaving the funnel stuck on
+  // the landing screen. Screens own their entrance animations.
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={step === 'quiz' ? `quiz-${currentQuestion?.id ?? questionIndex}` : step}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-        className="flex-1 flex flex-col"
-      >
+    <div
+      key={step === 'quiz' ? `quiz-${currentQuestion?.id ?? questionIndex}` : step}
+      className="flex-1 flex flex-col"
+    >
         {step === 'landing' && <LandingPage onStart={handleStart} />}
         {step === 'quiz' && currentQuestion && (
           <QuizStep
@@ -156,7 +153,6 @@ export default function Home() {
         {step === 'results' && result && (
           <ResultsPage result={result} onCtaClick={handleCtaClick} />
         )}
-      </motion.div>
-    </AnimatePresence>
+    </div>
   );
 }

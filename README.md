@@ -31,10 +31,35 @@ a funnel.
 
 | File | Owns |
 | --- | --- |
-| `config.ts` | Funnel name and slug, palette tokens, opt-in gate, CTA |
+| `config.ts` | Funnel name and slug, theme, opt-in gate, CTA |
 | `landing.ts` | Landing page copy |
 | `questions.ts` | The question flow, categories, branching, signals |
 | `results.ts` | Archetypes, result sections, signal mapping |
+
+## Themes
+
+The design is a theme system: design tokens only (palette, type
+pair, numerals, progress and option treatments), with the same
+components and layout underneath. `THEME` in `config.ts` is one
+value:
+
+| Theme | Feel |
+| --- | --- |
+| `clean` (default) | Quiet sans-serif, generous white, one restrained accent. Fits the most brands with the least risk. |
+| `manuscript` | Warm paper, high-contrast serif, printed questionnaire. |
+| `signal` | Dark graphite, bold caps, one loud accent. |
+
+Screenshots of every theme (landing, quiz step, results) live in
+`previews/`. The funnel-builder agent shows those previews at its
+plan gate so the human picks a theme before the build starts.
+`PALETTE_OVERRIDES` in `config.ts` can tint any theme's tokens per
+funnel. Themes are defined in `src/themes/`; adding one is one new
+file there.
+
+`/preview?theme=<id>&screen=<landing|quiz|optin|results>` renders
+any screen in any theme statically (no quiz walking, motion
+disabled). Regenerate the preview set with `npm run previews`
+(dev server must be running).
 
 How results work: every answer option can emit signals. The engine
 tallies signals, picks the archetype with the highest tally, and

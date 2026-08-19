@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction B: Signal</title>
+<!--
+TOKEN PLAN — Direction B "Signal"
+Feeling: a confident studio instrument at night. Dark, kinetic,
+premium through contrast and one loud accent used sparingly.
+
+Palette (named for job):
+  night     #0d0e11   page ground
+  panel     #15171c   surfaces
+  seam      #262931   borders
+  chalk     #f4f4f2   text
+  dim       #8e929c   secondary text
+  signal    #ff5a1f   accent (buttons, meter, marks)
+  nightink  #0d0e11   text on accent
+
+Type: Archivo (display, 700/800, tight, some caps) 56-72px hero vs
+      16.5px body = 4x contrast. Figtree for body/UI.
+Rhythm: generous but denser than A; atmosphere from faint radial
+      glow + grain, contained 680px quiz measure.
+Buttons: signal-orange rectangle, slight radius, bold caps label.
+Hero anatomy: status chip + massive tight grotesk thesis with one
+      word in signal, sub, CTA row.
+Signature: oversized ghost step numerals + thick signal progress
+      meter; answer cards as panels that light on the left edge.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0d0e11; --panel:#15171c; --seam:#262931; --chalk:#f4f4f2;
+    --dim:#8e929c; --signal:#ff5a1f; --nightink:#0d0e11;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--night);color:var(--chalk);font-family:Figtree,sans-serif;font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;background:
+    radial-gradient(900px 500px at 70% -10%, rgba(255,90,31,.09), transparent 60%),
+    radial-gradient(700px 400px at 10% 110%, rgba(255,90,31,.05), transparent 60%)}
+  .display{font-family:Archivo,sans-serif;font-weight:800;letter-spacing:-0.03em;line-height:1.02}
+  .divider{max-width:1100px;margin:0 auto;padding:14px 48px;border-top:1px solid var(--seam);color:var(--dim);font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}
+  .screen{max-width:1100px;margin:0 auto;padding:0 48px;position:relative}
+
+  /* ————— landing ————— */
+  .hero{padding:100px 0 80px}
+  .chip{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--seam);background:var(--panel);border-radius:999px;padding:8px 18px;color:var(--dim);font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--signal)}
+  .hero h1{font-size:clamp(44px,7vw,76px);margin-top:30px;max-width:14ch;text-transform:uppercase}
+  .hero h1 em{font-style:normal;color:var(--signal)}
+  .hero p{color:var(--dim);max-width:52ch;margin-top:24px;font-size:18px}
+  .btn{display:inline-block;background:var(--signal);color:var(--nightink);border:none;border-radius:8px;padding:18px 40px;font-family:Archivo;font-size:14px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-top:36px}
+  .micro{color:var(--dim);font-size:13px;margin-top:14px}
+  .proof{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:70px}
+  .proof div{background:var(--panel);border:1px solid var(--seam);border-radius:12px;padding:26px 24px}
+  .proof .n{font-family:Archivo;font-weight:800;color:var(--signal);font-size:13px;letter-spacing:.12em}
+  .proof h3{font-family:Archivo;font-weight:700;font-size:16px;margin-top:10px}
+  .proof p{color:var(--dim);font-size:14px;margin-top:8px;line-height:1.55}
+
+  /* ————— quiz ————— */
+  .quiz{max-width:680px;margin:0 auto;padding:80px 48px 110px;position:relative}
+  .ghost{position:absolute;top:34px;right:28px;font-family:Archivo;font-weight:800;font-size:150px;line-height:1;color:transparent;-webkit-text-stroke:1px var(--seam);user-select:none}
+  .meter{height:6px;background:var(--seam);border-radius:3px;overflow:hidden;margin-top:18px}
+  .meter i{display:block;height:100%;width:28%;background:var(--signal);border-radius:3px}
+  .qtop{display:flex;justify-content:space-between;color:var(--dim);font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+  .quiz h2{font-family:Archivo;font-weight:700;letter-spacing:-0.02em;font-size:clamp(28px,4vw,38px);line-height:1.12;margin-top:48px;position:relative}
+  .opts{margin-top:36px;display:grid;gap:12px}
+  .opt{display:block;width:100%;text-align:left;background:var(--panel);border:1px solid var(--seam);border-left:3px solid var(--seam);border-radius:10px;padding:20px 22px;color:var(--chalk);font-family:Figtree;font-size:16.5px;cursor:pointer}
+  .opt.sel{border-color:var(--signal);border-left:3px solid var(--signal);background:#1a1610}
+  .opt.sel{font-weight:600}
+
+  /* ————— opt-in ————— */
+  .optin{max-width:520px;margin:0 auto;padding:100px 48px;text-align:center;position:relative}
+  .optin h2{font-family:Archivo;font-weight:800;letter-spacing:-0.02em;font-size:clamp(32px,4vw,44px);text-transform:uppercase}
+  .optin>p{color:var(--dim);margin-top:16px}
+  .field{width:100%;background:var(--panel);border:1px solid var(--seam);border-radius:10px;padding:18px 22px;font-family:Figtree;font-size:16px;color:var(--chalk);margin-top:14px}
+  .field::placeholder{color:var(--dim)}
+  .optin .btn{width:100%;margin-top:22px}
+  .fine{color:var(--dim);font-size:12.5px;margin-top:14px}
+
+  /* ————— results ————— */
+  .results{max-width:720px;margin:0 auto;padding:90px 48px 120px;position:relative}
+  .rhead .chip{margin-bottom:26px}
+  .results h1{font-size:clamp(40px,6vw,64px);text-transform:uppercase}
+  .results .sub{color:var(--signal);font-family:Archivo;font-weight:600;font-size:18px;margin-top:14px;letter-spacing:.02em}
+  .lede{margin-top:28px;font-size:17px;line-height:1.7;color:#c9ccd2}
+  .sec{margin-top:26px;background:var(--panel);border:1px solid var(--seam);border-radius:14px;padding:32px 34px}
+  .sec .no{font-family:Archivo;font-weight:800;color:var(--signal);font-size:13px;letter-spacing:.14em}
+  .sec h3{font-family:Archivo;font-weight:700;font-size:22px;margin-top:10px;letter-spacing:-0.01em}
+  .sec p{margin-top:12px;color:#c9ccd2}
+  .sec li{list-style:none;padding-left:24px;position:relative;margin-top:10px;color:var(--dim)}
+  .sec li::before{content:"";position:absolute;left:0;top:9px;width:12px;height:2px;background:var(--signal)}
+  .cta-final{text-align:center;margin-top:60px}
+</style>
+</head>
+<body>
+
+<div class="divider">Screen 1 · Landing</div>
+<section class="screen hero">
+  <span class="chip">Free 2 minute quiz</span>
+  <h1 class="display">Find out what is <em>actually</em> holding your brand back</h1>
+  <p>Answer 7 quick questions and get a personalized read on where your growth is leaking, plus the one move to make first.</p>
+  <button class="btn">Start the quiz</button>
+  <p class="micro">Takes 2 minutes. Instant results.</p>
+  <div class="proof">
+    <div><span class="n">01</span><h3>Personalized</h3><p>Your answers shape every section of your result. No generic report.</p></div>
+    <div><span class="n">02</span><h3>Grounded</h3><p>Built from patterns across real client work, not internet theory.</p></div>
+    <div><span class="n">03</span><h3>Actionable</h3><p>You leave with one clear next move, whether or not we ever talk.</p></div>
+  </div>
+</section>
+
+<div class="divider">Screen 2 · Quiz step</div>
+<section class="quiz" id="s2">
+  <span class="ghost">02</span>
+  <div class="qtop"><span>← Back</span><span>Step 2 of 7</span></div>
+  <div class="meter"><i></i></div>
+  <h2>What frustrates you most about getting clients?</h2>
+  <div class="opts">
+    <button class="opt">Nobody knows we exist</button>
+    <button class="opt sel">People do not get what makes us different</button>
+    <button class="opt">Plenty of interest, but few say yes</button>
+    <button class="opt">Feast or famine, no steady pipeline</button>
+  </div>
+</section>
+
+<div class="divider">Screen 3 · Opt-in</div>
+<section class="optin" id="s3">
+  <h2>Your results are ready</h2>
+  <p>Tell us where to send your full breakdown and see it on screen right now.</p>
+  <input class="field" placeholder="Your name">
+  <input class="field" placeholder="Your email">
+  <button class="btn">Show my results</button>
+  <p class="fine">No spam. One useful email, then you decide.</p>
+</section>
+
+<div class="divider">Screen 4 · Results</div>
+<section class="results" id="s4">
+  <div class="rhead">
+    <span class="chip">Your result</span>
+    <h1 class="display">The Hidden Gem</h1>
+    <p class="sub">Your work is better than your brand says it is</p>
+  </div>
+  <p class="lede">The craft is real, but the story around it is fuzzy. People cannot repeat what makes you different, so they default to comparing you on price. Your leverage is clarity: one sharp promise, said everywhere the same way.</p>
+  <div class="sec">
+    <span class="no">01</span>
+    <h3>What your answers reveal</h3>
+    <p>Your answers point at positioning. When the promise is fuzzy, marketing gets expensive: every post and page has to work twice as hard.</p>
+    <ul>
+      <li>Prospects hesitate because they cannot tell what makes you the obvious choice</li>
+      <li>Word of mouth works, but it spreads a vague story</li>
+    </ul>
+  </div>
+  <div class="cta-final">
+    <button class="btn">Book your free strategy call</button>
+    <p class="fine">20 minutes, no pitch. We walk through your result together.</p>
+  </div>
+</section>
+
+<script>
+// Preview helper: ?only=sN shows a single screen (pane repaint workaround).
+const only = new URLSearchParams(location.search).get('only');
+if (only) {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('section, .divider').forEach(el => {
+      const sec = el.matches('section') ? el : el.nextElementSibling;
+      if (sec && sec.id !== only && !(only === 's1' && sec.classList.contains('hero'))) {
+        el.style.display = 'none';
+      }
+    });
+  });
+}
+</script>
+</body>
+</html>
