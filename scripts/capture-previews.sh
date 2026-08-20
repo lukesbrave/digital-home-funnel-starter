@@ -17,16 +17,14 @@ fi
 cd "$(dirname "$0")/.."
 mkdir -p previews
 
+# 1440x900 = a real 16:10 desktop viewport. The gallery shows these
+# inside a 16:10 monitor frame, so every capture is the
+# above-the-fold view, never a scaled-down full-page scroll.
 for theme in clean manuscript signal; do
   for screen in landing quiz results; do
-    case $screen in
-      landing) H=1500 ;;
-      quiz) H=1050 ;;
-      results) H=1900 ;;
-    esac
     echo "capturing $theme-$screen"
     "$CHROME" --headless=new --disable-gpu --hide-scrollbars \
-      --virtual-time-budget=6000 --window-size=1440,$H \
+      --virtual-time-budget=6000 --window-size=1440,900 \
       --screenshot="previews/$theme-$screen.png" \
       "$BASE_URL/preview?theme=$theme&screen=$screen" 2>/dev/null
   done
