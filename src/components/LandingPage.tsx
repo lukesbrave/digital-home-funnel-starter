@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { LANDING } from '@/funnel/landing';
 import { buttonStyle, displayStyle, useTheme } from './ThemeProvider';
+import { SiteHeader, SiteFooter } from './SiteChrome';
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   const theme = useTheme();
@@ -44,6 +45,7 @@ export default function LandingPage({ onStart }: { onStart: () => void }) {
 
   return (
     <main className="flex-1 flex flex-col">
+      <SiteHeader />
       <section className="flex-1 flex items-center px-6 pt-20 pb-14 sm:pt-24">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -96,11 +98,7 @@ export default function LandingPage({ onStart }: { onStart: () => void }) {
         </motion.div>
       </section>
 
-      {LANDING.footer && (
-        <footer className="px-6 pb-8 text-center text-xs text-[var(--muted)]">
-          {LANDING.footer}
-        </footer>
-      )}
+      <SiteFooter note={LANDING.footer || undefined} />
     </main>
   );
 }

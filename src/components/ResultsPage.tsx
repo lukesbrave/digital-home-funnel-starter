@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { CTA } from '@/funnel/config';
 import type { QuizResult } from '@/lib/types';
 import { buttonStyle, displayStyle, useTheme } from './ThemeProvider';
+import { SiteHeader, SiteFooter } from './SiteChrome';
 
 const roman = ['I.', 'II.', 'III.', 'IV.', 'V.', 'VI.', 'VII.'];
 
@@ -45,7 +46,9 @@ export default function ResultsPage({
   const centered = theme.heroAlign === 'center';
 
   return (
-    <main className="flex-1 px-6 py-16">
+    <main className="flex-1 flex flex-col">
+      <SiteHeader />
+      <div className="flex-1 px-6 py-16">
       <div className="mx-auto max-w-2xl">
         <motion.header
           initial={{ opacity: 0, y: 16 }}
@@ -144,6 +147,8 @@ export default function ResultsPage({
           {CTA.note && <p className="mt-4 text-sm text-[var(--muted)]">{CTA.note}</p>}
         </motion.div>
       </div>
+    </div>
+      <SiteFooter />
     </main>
   );
 }

@@ -21,6 +21,7 @@ import { trackEvent, getFunnelSessionId } from '@/lib/events';
 import type { SalesSection } from '@/lib/types';
 import { Eyebrow } from './LandingPage';
 import { buttonStyle, displayStyle, useTheme } from './ThemeProvider';
+import { SiteHeader, SiteFooter } from './SiteChrome';
 import type { Theme } from '@/themes';
 
 /** Band treatment per section kind: ground / surface / inverted. */
@@ -462,8 +463,19 @@ export default function SalesPage() {
     };
   }, []);
 
+  const NAV_LABELS: Partial<Record<SalesSection['kind'], string>> = {
+    offer: 'What you get',
+    proof: 'Proof',
+    pricing: 'Pricing',
+    faq: 'FAQ',
+  };
+  const nav = SALES.sections
+    .filter((s) => NAV_LABELS[s.kind])
+    .map((s) => ({ label: NAV_LABELS[s.kind]!, href: `#${s.kind}` }));
+
   return (
     <main className="flex-1">
+      <SiteHeader nav={nav} />
       {SALES.sections.map((section, i) => (
         <section
           key={`${section.kind}-${i}`}
@@ -479,9 +491,8 @@ export default function SalesPage() {
         </section>
       ))}
 
-      {SALES.footer && (
-        <footer className="px-6 pb-24 pt-2 text-center text-xs text-[var(--muted)]">{SALES.footer}</footer>
-      )}
+      <div className="pb-14" />
+      <SiteFooter note={SALES.footer || undefined} />
 
       {SALES.stickyBar && (
         <div

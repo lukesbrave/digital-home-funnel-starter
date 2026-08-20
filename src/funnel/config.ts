@@ -63,3 +63,9 @@ export const CTA: CtaConfig = {
   label: 'Book your free strategy call',
   note: '20 minutes, no pitch. We walk through your result together.',
 };
+
+/**
+ * The mock brand chrome on every page: wordmark in the header rail
+ * and the centered footer. Injected per funnel like everything else.
+ */
+export const BRAND = { wordmark: 'BRANDNAME' };
