@@ -95,3 +95,39 @@ export interface QuizResult {
 }
 
 export type AppStep = 'landing' | 'quiz' | 'optin' | 'loading' | 'results';
+
+/** Which page composition this funnel ships. Types share themes,
+ *  events, capture, and deploy; only the composition differs. */
+export type FunnelType = 'quiz' | 'sales-page';
+
+/**
+ * Sales-page sections — the 12-step sales spine collapsed to
+ * buildable blocks. The page renders whatever sections exist, in
+ * order; every block is optional except hero and final-cta. Copy
+ * comes from the copy desk; this schema maps 1:1 to its output so
+ * words flow in as data with no rewriting.
+ */
+export type SalesSection =
+  | { kind: 'hero'; eyebrow?: string; headline: string; subheadline: string;
+      buttonLabel: string; microcopy?: string;
+      /** Optional stat card beside the hero (desktop). */
+      stats?: { label: string; value: string }[] }
+  | { kind: 'problem'; kicker?: string; headline: string; body: string[] }
+  | { kind: 'story'; kicker?: string; headline: string; body?: string;
+      steps: { title: string; body: string }[] }
+  | { kind: 'offer'; kicker?: string; headline: string; body?: string;
+      buttonLabel?: string; items: { label: string; tag?: string }[] }
+  | { kind: 'proof'; kicker?: string; headline: string;
+      quotes: { quote: string; who: string }[] }
+  | { kind: 'pricing'; kicker?: string; headline: string; price: string;
+      priceNote?: string; buttonLabel: string; guarantee?: string }
+  | { kind: 'faq'; kicker?: string; headline: string;
+      items: { q: string; a: string }[] }
+  | { kind: 'final-cta'; headline: string; body?: string; buttonLabel: string };
+
+export interface SalesPageConfig {
+  sections: SalesSection[];
+  /** Small persistent CTA bar once the visitor scrolls past the hero. */
+  stickyBar?: { text: string; buttonLabel: string };
+  footer?: string;
+}

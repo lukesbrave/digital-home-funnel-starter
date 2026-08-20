@@ -6,8 +6,13 @@
  *   /preview?theme=clean&screen=landing
  *   /preview?theme=signal&screen=quiz
  *   /preview?theme=manuscript&screen=results
+ *   /preview?theme=clean&screen=sales
  *
  * screen: landing | quiz | optin | results (omit for all stacked).
+ * Sales-page composition: screen=sales renders the full page;
+ * sales-hero / sales-offer / sales-proof render capture slices (the
+ * page starting from that section) so a fixed-viewport screenshot
+ * lands on the right content without scrolling.
  * Used to pre-render the previews/ screenshot set, and by the
  * funnel-builder agent to re-render previews after injecting data.
  * Motion is disabled so captures are deterministic.
@@ -19,12 +24,21 @@ import LandingPage from '@/components/LandingPage';
 import QuizStep from '@/components/QuizStep';
 import OptInStep from '@/components/OptInStep';
 import ResultsPage from '@/components/ResultsPage';
+import SalesPage from '@/components/SalesPage';
 import ThemeProvider from '@/components/ThemeProvider';
 import { resolveTheme } from '@/themes';
 import { PALETTE_OVERRIDES, THEME } from '@/funnel/config';
 import { QUESTIONS } from '@/funnel/questions';
 import { computeResult } from '@/lib/engine';
 import type { Answers } from '@/lib/types';
+
+/** Capture slices: hide everything before this section so the
+ *  viewport-sized screenshot starts exactly there. */
+const SALES_SLICES: Record<string, string> = {
+  'sales-hero': 'hero',
+  'sales-offer': 'offer',
+  'sales-proof': 'proof',
+};
 
 const noop = () => {};
 
@@ -64,17 +78,28 @@ function PreviewInner() {
 
   const shown = screen && screens[screen] ? [screen] : Object.keys(screens);
 
+  const isSales = screen === 'sales' || (screen !== null && screen in SALES_SLICES);
+  const sliceFrom = screen ? SALES_SLICES[screen] : undefined;
+
   return (
     <MotionConfig reducedMotion="always">
       {/* Captures must be deterministic: neutralize entrance motion. */}
       <style>{`[data-static] main * { opacity: 1 !important; transform: none !important; }`}</style>
+      {sliceFrom && (
+        <style>{`[data-static] main > section#${sliceFrom} ~ section { display: block; }
+          [data-static] main > section:has(~ section#${sliceFrom}) { display: none; }`}</style>
+      )}
       <div data-static className="flex-1 flex flex-col">
         <ThemeProvider theme={theme}>
-          {shown.map((key) => (
-            <div key={key} className="flex flex-col min-h-screen">
-              {screens[key]}
-            </div>
-          ))}
+          {isSales ? (
+            <SalesPage />
+          ) : (
+            shown.map((key) => (
+              <div key={key} className="flex flex-col min-h-screen">
+                {screens[key]}
+              </div>
+            ))
+          )}
         </ThemeProvider>
       </div>
     </MotionConfig>

@@ -30,4 +30,15 @@ for theme in clean manuscript signal; do
   done
 done
 
+# Sales-page composition slices (hero / offer / proof), same viewport.
+for theme in clean manuscript signal; do
+  for slice in hero offer proof; do
+    echo "capturing $theme-sales-page-$slice"
+    "$CHROME" --headless=new --disable-gpu --hide-scrollbars \
+      --virtual-time-budget=6000 --window-size=1440,900 \
+      --screenshot="previews/$theme-sales-page-$slice.png" \
+      "$BASE_URL/preview?theme=$theme&screen=sales-$slice" 2>/dev/null
+  done
+done
+
 echo "done: $(ls previews | wc -l | tr -d ' ') files in previews/"

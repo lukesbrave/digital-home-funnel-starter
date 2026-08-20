@@ -4,15 +4,24 @@
  * This folder (src/funnel/) is the entire customization surface. A
  * complete funnel is produced by editing the four data files here:
  *
- *   config.ts    -> name, slug, palette, opt-in gate, CTA
- *   landing.ts   -> landing page copy
- *   questions.ts -> the question flow and its branching
- *   results.ts   -> archetypes, result sections, signal mapping
+ *   config.ts    -> type, name, slug, palette, opt-in gate, CTA
+ *   landing.ts   -> landing page copy          (quiz type)
+ *   questions.ts -> the question flow          (quiz type)
+ *   results.ts   -> archetypes, result mapping (quiz type)
+ *   sales.ts     -> sales page sections        (sales-page type)
  *
  * Components and lib code never need to change.
  */
-import type { CtaConfig, OptInConfig } from '@/lib/types';
+import type { CtaConfig, FunnelType, OptInConfig } from '@/lib/types';
 import type { ThemeTokens } from '@/themes';
+
+/**
+ * Which page composition this funnel ships. 'quiz' walks visitors
+ * through questions to a personalized result; 'sales-page' is a
+ * long-form conversion page (sections in sales.ts). Both share the
+ * same themes, events, capture, and deploy.
+ */
+export const FUNNEL_TYPE: FunnelType = 'quiz';
 
 /** Shown in the browser tab and used as the CRM source tag. */
 export const FUNNEL_NAME = 'The Brand Momentum Quiz';

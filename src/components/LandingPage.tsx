@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { LANDING } from '@/funnel/landing';
 import { buttonStyle, displayStyle, useTheme } from './ThemeProvider';
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
+export function Eyebrow({ children }: { children: React.ReactNode }) {
   const theme = useTheme();
   if (theme.eyebrow === 'chip') {
     return (
