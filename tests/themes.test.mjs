@@ -8,7 +8,7 @@ import { bali } from '../src/themes/bali.ts';
 import { clean } from '../src/themes/clean.ts';
 import { manuscript } from '../src/themes/manuscript.ts';
 import { signal } from '../src/themes/signal.ts';
-import { SALES } from '../src/funnel/sales.ts';
+import { SALES_BRAND_MOMENTUM as SALES } from '../src/funnel/samples/brand-momentum.ts';
 
 const HEX = /^#[0-9a-f]{6}$/;
 

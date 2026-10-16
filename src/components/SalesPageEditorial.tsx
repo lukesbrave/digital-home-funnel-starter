@@ -166,7 +166,16 @@ function Hero({ section }: { section: Extract<SalesSection, { kind: 'hero' }> })
           <p className="rise mb-7 text-[10px] font-medium uppercase tracking-[0.26em]">{section.eyebrow}</p>
         )}
         <div className="overflow-hidden py-2">
-          <h1 className="rise rise-2 max-w-[1100px] text-balance text-[clamp(3.4rem,7.5vw,7.6rem)] leading-[0.88] tracking-[-0.045em]" style={display}>
+          {/* A short headline is display type; a sentence-length one takes the
+              event page's sentence scale, or it becomes a wall of serif. */}
+          <h1
+            className={`rise rise-2 text-balance ${
+              section.headline.length > 70
+                ? 'max-w-[1108px] text-[clamp(2rem,3.5vw,3.5rem)] leading-[1.15] tracking-[-0.035em]'
+                : 'max-w-[1100px] text-[clamp(3.4rem,7.5vw,7.6rem)] leading-[0.88] tracking-[-0.045em]'
+            }`}
+            style={display}
+          >
             <Emphasis text={section.headline} emphasis={section.emphasis} />
           </h1>
         </div>

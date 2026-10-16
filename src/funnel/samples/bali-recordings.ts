@@ -28,10 +28,11 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
     {
       kind: 'hero',
       eyebrow: 'The Bali Chapter · Paul Counsel · Recorded October 2026',
-      headline: 'Your brain is working against your money.',
-      emphasis: 'against your money.',
+      headline:
+        'Five Days That Will Collapse Years of Financial Anxiety and Uncertainty About Your Future Into Peace of Mind, at the Exact Moment in History When That Matters Most.',
+      emphasis: 'Peace of Mind',
       subheadline:
-        'Not as a figure of speech. Seven sessions, recorded in a room in Bali, where Paul Counsel takes apart the machinery underneath every financial decision you have ever made, and shows what has to change before money stays.',
+        'Seven sessions recorded in the room at The Bali Chapter, where Paul Counsel, the mentor who warned of the 2008 crash in his books, takes apart the conditioning that keeps money leaving and shows what has to change in the person holding it. Everything the room learned, in the order it learned it, at your own pace.',
       buttonLabel: 'Get the recordings',
       secondaryLabel: 'Start with the hook',
       microcopy: 'Seven sessions · The final-day Q&A · Recorded in the room',
