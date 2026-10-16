@@ -34,6 +34,12 @@ test('no price before step seven: the hero and the rail carry none', () => {
   assert.ok(firstPriced >= SALES.sections.findIndex((s) => s.kind === 'value-stack'), 'price appears no earlier than the value stack');
 });
 
+test('no narrator: no "we", no lines about the page itself', () => {
+  const prose = SALES.sections.flatMap((s) => [s.headline, s.subheadline, s.body, ...(s.items ?? []).map((i) => i.a ?? i.detail ?? i.label), ...(s.steps ?? []).map((x) => x.body)]).flat().filter(Boolean).join(' ');
+  assert.ok(!/\b(we|our|ours)\b/i.test(prose), 'the copy speaks from inside the reader, never as "we"');
+  assert.ok(!/this page/i.test(prose), 'the copy never talks about the page');
+});
+
 test('no partner terms and no invented proof', () => {
   for (const word of ['commission', 'partner', 'affiliate', 'payout']) assert.ok(!text.toLowerCase().includes(word), word);
   const proof = SALES.sections.find((s) => s.kind === 'proof');
