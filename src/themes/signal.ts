@@ -29,4 +29,5 @@ export const signal: Theme = {
   sections: 'panel',
   proof: 'panel',
   atmosphere: 'glow',
+  price: 'boxed',
 };

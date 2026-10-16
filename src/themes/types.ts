@@ -57,4 +57,10 @@ export interface Theme {
   proof: 'columns' | 'panel' | 'soft';
   /** Optional page atmosphere. */
   atmosphere: 'none' | 'glow';
+  /**
+   * Sales-page price treatment. 'boxed' is the centred price box;
+   * 'editorial' is a left-set card beside the headline, display-font
+   * price, hairline rows, the way an event page prices a seat.
+   */
+  price: 'boxed' | 'editorial';
 }

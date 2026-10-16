@@ -38,6 +38,7 @@ const BAND: Record<SalesSection['kind'], 'ground' | 'surface' | 'inverted'> = {
   problem: 'surface',
   story: 'ground',
   offer: 'inverted',
+  'value-stack': 'surface',
   proof: 'ground',
   pricing: 'surface',
   faq: 'ground',
@@ -360,6 +361,65 @@ function Section({ section }: { section: SalesSection }) {
         </Rise>
       );
 
+    case 'value-stack':
+      return (
+        <Rise className="mx-auto grid w-full max-w-6xl gap-12 px-6 md:grid-cols-[0.85fr_1.15fr]">
+          <div>
+            {section.kicker && <Kicker>{section.kicker}</Kicker>}
+            <h2 className="mt-5 max-w-[16ch] text-[clamp(28px,4vw,42px)]" style={displayStyle(theme)}>
+              {section.headline}
+            </h2>
+            {section.body && (
+              <p className="mt-5 max-w-[42ch] text-lg leading-relaxed text-[var(--muted)]">{section.body}</p>
+            )}
+            {section.buttonLabel && (
+              <div className="mt-8 hidden md:block">
+                <CtaButton label={section.buttonLabel} accent />
+              </div>
+            )}
+          </div>
+          <div>
+            <ol className="border-t border-[var(--border)]">
+              {section.items.map((item, i) => (
+                <li
+                  key={item.label}
+                  className="grid grid-cols-[44px_1fr_auto] items-start gap-4 border-b border-[var(--border)] py-5"
+                >
+                  <span
+                    className="pt-0.5 text-sm text-[var(--muted)]"
+                    style={theme.numerals === 'serif' ? { fontFamily: 'var(--font-display)' } : undefined}
+                  >
+                    {theme.numerals === 'serif' ? `No. ${i + 1}` : String(i + 1).padStart(2, '0')}
+                  </span>
+                  <div>
+                    <div className="text-[17px] font-medium leading-snug">{item.label}</div>
+                    {item.detail && (
+                      <p className="mt-1.5 max-w-[48ch] text-[15px] leading-relaxed text-[var(--muted)]">{item.detail}</p>
+                    )}
+                  </div>
+                  {item.value && <span className="whitespace-nowrap pt-0.5 text-[15px] text-[var(--muted)]">{item.value}</span>}
+                </li>
+              ))}
+            </ol>
+            {section.total && (
+              <div className="flex items-baseline justify-between gap-4 py-5">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
+                  {section.total.label}
+                </span>
+                <span className="text-[clamp(24px,3vw,32px)]" style={displayStyle(theme)}>
+                  {section.total.value}
+                </span>
+              </div>
+            )}
+            {section.buttonLabel && (
+              <div className="mt-4 md:hidden">
+                <CtaButton label={section.buttonLabel} accent />
+              </div>
+            )}
+          </div>
+        </Rise>
+      );
+
     case 'proof':
       return (
         <Rise className="mx-auto w-full max-w-6xl px-6">
@@ -382,6 +442,32 @@ function Section({ section }: { section: SalesSection }) {
       );
 
     case 'pricing':
+      if (theme.price === 'editorial') {
+        return (
+          <Rise className="mx-auto grid w-full max-w-6xl gap-12 px-6 md:grid-cols-2 md:items-end">
+            <div>
+              {section.kicker && <Kicker>{section.kicker}</Kicker>}
+              <h2 className="mt-5 max-w-[16ch] text-[clamp(28px,4vw,42px)]" style={displayStyle(theme)}>
+                {section.headline}
+              </h2>
+              {section.guarantee && (
+                <p className="mt-6 max-w-[44ch] text-[15px] leading-relaxed text-[var(--muted)]">{section.guarantee}</p>
+              )}
+            </div>
+            <div className="flex flex-col border border-[var(--border)] bg-[var(--background)] p-9">
+              <div className="text-[clamp(44px,6vw,72px)]" style={displayStyle(theme)}>
+                {section.price}
+              </div>
+              {section.priceNote && (
+                <p className="mt-3 text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">{section.priceNote}</p>
+              )}
+              <div className="mt-8 border-t border-[var(--border)] pt-8 [&_a]:w-full [&_button]:w-full">
+                <CtaButton label={section.buttonLabel} />
+              </div>
+            </div>
+          </Rise>
+        );
+      }
       return (
         <Rise className="mx-auto w-full max-w-6xl px-6 text-center">
           {section.kicker && <Kicker>{section.kicker}</Kicker>}
@@ -496,6 +582,7 @@ export default function SalesPage() {
 
   const NAV_LABELS: Partial<Record<SalesSection['kind'], string>> = {
     offer: 'What you get',
+    'value-stack': 'Inside',
     proof: 'Proof',
     pricing: 'Pricing',
     faq: 'FAQ',

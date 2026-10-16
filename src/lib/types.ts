@@ -140,6 +140,11 @@ export type SalesSection =
       steps: { title: string; body: string }[] }
   | { kind: 'offer'; kicker?: string; headline: string; body?: string;
       buttonLabel?: string; items: { label: string; tag?: string }[] }
+  /** The value stack: every piece inside the offer, numbered, each
+   *  with an optional worth, and a total line the price then undercuts. */
+  | { kind: 'value-stack'; kicker?: string; headline: string; body?: string;
+      items: { label: string; detail?: string; value?: string }[];
+      total?: { label: string; value: string }; buttonLabel?: string }
   | { kind: 'proof'; kicker?: string; headline: string;
       quotes: { quote: string; who: string }[] }
   | { kind: 'pricing'; kicker?: string; headline: string; price: string;

@@ -1,11 +1,12 @@
 import type { Theme, ThemeTokens } from './types';
+import { bali } from './bali';
 import { clean } from './clean';
 import { manuscript } from './manuscript';
 import { signal } from './signal';
 
 export type { Theme, ThemeTokens } from './types';
 
-export const THEMES: Record<string, Theme> = { clean, manuscript, signal };
+export const THEMES: Record<string, Theme> = { clean, manuscript, signal, bali };
 
 /** Resolve a theme id, applying any per-funnel token overrides. */
 export function resolveTheme(

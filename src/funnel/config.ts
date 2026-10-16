@@ -38,7 +38,7 @@ export const FUNNEL_SLUG = 'brand-momentum';
  * 'signal' (dark, bold, one loud accent). Screenshots of each live
  * in previews/. Themes are defined in src/themes/.
  */
-export const THEME: 'clean' | 'manuscript' | 'signal' = 'clean';
+export const THEME: 'clean' | 'manuscript' | 'signal' | 'bali' = 'clean';
 
 /**
  * Optional per-funnel token overrides on top of the theme, for

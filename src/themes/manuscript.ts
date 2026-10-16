@@ -29,4 +29,5 @@ export const manuscript: Theme = {
   sections: 'rule',
   proof: 'columns',
   atmosphere: 'none',
+  price: 'boxed',
 };

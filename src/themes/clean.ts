@@ -30,4 +30,5 @@ export const clean: Theme = {
   sections: 'soft',
   proof: 'soft',
   atmosphere: 'none',
+  price: 'boxed',
 };

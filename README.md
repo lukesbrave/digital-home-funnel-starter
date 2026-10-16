@@ -48,6 +48,7 @@ value:
 | `clean` (default) | Quiet sans-serif, generous white, one restrained accent. Fits the most brands with the least risk. |
 | `manuscript` | Warm paper, high-contrast serif, printed questionnaire. |
 | `signal` | Dark graphite, bold caps, one loud accent. |
+| `bali` | Editorial claret on cream: Sentient serif display, Inter eyebrows, hairlines and numbered rows, square caps buttons. Sales-page price renders as an editorial card. |
 
 Screenshots of every theme (landing, quiz step, results) live in
 `previews/`. The funnel-builder agent shows those previews at its
@@ -68,6 +69,13 @@ answers, same result, no API keys required.
 
 CTA kinds: `book-call`, `checkout`, `external-link`, `lead-capture`,
 or `two-step-checkout` (see below). One CTA per funnel.
+
+Sales-page sections (`sales.ts`, in order): `hero`, `problem`, `story`,
+`offer`, `value-stack` (every piece inside the offer, numbered, each
+with an optional worth and a total line the price then undercuts),
+`proof` (real quotes only), `pricing`, `faq`, `final-cta`. Every
+block is optional except hero and final-cta; the page renders what
+exists, in order, and each becomes a step in the scroll-depth funnel.
 
 ## Wiring your Digital Home (two values)
 

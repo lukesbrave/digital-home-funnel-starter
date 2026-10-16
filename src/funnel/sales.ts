@@ -83,6 +83,20 @@ export const SALES: SalesPageConfig = {
       ],
     },
     {
+      kind: 'value-stack',
+      kicker: 'Everything inside',
+      headline: 'What the sprint hands you, piece by piece.',
+      body: 'Each piece stands on its own. Together they are the system.',
+      items: [
+        { label: 'The leak diagnosis', detail: 'A 90 minute working session that maps where growth escapes.', value: '$1,200' },
+        { label: 'The system build', detail: 'Two weeks of installation with a named owner for every step.', value: '$2,400' },
+        { label: 'The handover', detail: 'Documentation your team can run without you in the room.', value: '$900' },
+        { label: 'Six weeks of review calls', detail: 'Weekly, so the system is corrected while it is still cheap to.', value: '$1,800' },
+      ],
+      total: { label: 'Total value', value: '$6,300' },
+      buttonLabel: 'Start your sprint',
+    },
+    {
       kind: 'proof',
       kicker: 'Proof',
       headline: 'Founders who sealed the leak.',
