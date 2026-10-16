@@ -35,7 +35,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       emphasis: 'Peace of Mind',
       subheadline:
         'Seven seminars recorded in the room at The Bali Chapter, where Paul Counsel, the mentor who warned of the 2008 crash in his books, takes apart the conditioning that keeps money leaving and shows what has to change in the person holding it. Everything the room learned, in the order it learned it, at your own pace.',
-      buttonLabel: "Yes, show me what's been running me",
+      buttonLabel: 'Yes, I want peace of mind about my future',
       microcopy: 'Seven seminars and the final-day Q&A, recorded in the room at Andaz Bali.',
       variant: 'split',
       // The big picture is a silent loop of Paul speaking in the room; until

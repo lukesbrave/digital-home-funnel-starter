@@ -174,7 +174,7 @@ function SplitHero({ section }: { section: Extract<SalesSection, { kind: 'hero' 
         {/* One button, big enough to be the point of the column. */}
         <div className="rise rise-4 mt-9 flex flex-col items-center gap-5">
           <Cta
-            label={`${section.buttonLabel} ↗`}
+            label={section.buttonLabel}
             variant="solid"
             className="!h-[62px] !px-12 !text-[11px] !tracking-[0.22em] shadow-[0_22px_48px_rgba(71,20,26,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
           />
