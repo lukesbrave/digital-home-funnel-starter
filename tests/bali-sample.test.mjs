@@ -16,13 +16,14 @@ test('editorial layout with one block per step of the twelve, in order', () => {
   );
 });
 
-test('the seat price is the only anchor and the early bird never appears', () => {
+test('no live or seat price anywhere; the only price is the price card', () => {
   assert.ok(!text.includes('997'));
+  assert.ok(!text.includes('1,500'), 'no live price');
   assert.ok(!text.includes('—'), 'no em dashes');
   const stack = SALES.sections.find((s) => s.kind === 'value-stack');
   assert.equal(stack.items.length, 7);
   for (const item of stack.items) assert.equal(item.value, undefined, item.label);
-  assert.equal(stack.total.value, '$1,500');
+  assert.equal(stack.total, undefined);
   assert.equal(SALES.sections.find((s) => s.kind === 'pricing').price, '$500');
 });
 
@@ -31,7 +32,7 @@ test('no price before step seven: the hero and the rail carry none', () => {
   const heroText = JSON.stringify(hero) + (SALES.stickyBar?.text ?? '');
   assert.ok(!heroText.includes('$'), 'no dollar figure in the hero or the sticky bar text');
   const firstPriced = SALES.sections.findIndex((s) => JSON.stringify(s).includes('$'));
-  assert.ok(firstPriced >= SALES.sections.findIndex((s) => s.kind === 'value-stack'), 'price appears no earlier than the value stack');
+  assert.equal(SALES.sections[firstPriced].kind, 'pricing', 'the first price on the page is the price card');
 });
 
 test('no narrator: no "we", no lines about the page itself', () => {

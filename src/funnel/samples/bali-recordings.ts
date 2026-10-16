@@ -139,7 +139,6 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
         { label: 'Index Neurons', detail: 'How they are trained to support dopamine-driven consumption.' },
         { label: 'The Illusionary Self', detail: 'Why it is a controlled hallucination.', group: 'The self' },
       ],
-      total: { label: 'Live, these seven seminars cost', value: '$1,500' },
     },
     {
       kind: 'scarcity',

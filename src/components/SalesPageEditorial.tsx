@@ -341,34 +341,44 @@ function ExpandingRow({ items }: { items: { label: string; detail?: string; grou
         {items.map((it, i) => {
           const open = i === active;
           return (
+            /* Only the width animates. Both states are fixed-width layers that
+               crossfade, so no text rewraps while the card is moving. */
             <button
               key={it.label}
               type="button"
               onClick={() => setActive(i)}
               aria-expanded={open}
               style={{ flexGrow: open ? 3.4 : 1, flexBasis: 0 }}
-              className={`group relative min-w-0 overflow-hidden text-left transition-[flex-grow,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] max-[809px]:w-full ${
-                open ? 'h-[280px] bg-[#0f100e] text-[#f2eee7] max-[809px]:h-auto' : 'h-[280px] bg-[rgba(15,16,14,0.55)] text-[#f2eee7] backdrop-blur-sm hover:bg-[rgba(15,16,14,0.75)] max-[809px]:h-[64px]'
+              className={`relative h-[280px] min-w-0 overflow-hidden text-left text-[#f2eee7] transition-[flex-grow,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[flex-grow] max-[809px]:w-full max-[809px]:transition-[height,background-color] ${
+                open ? 'bg-[#0f100e] max-[809px]:h-[300px]' : 'bg-[rgba(15,16,14,0.55)] backdrop-blur-sm hover:bg-[rgba(15,16,14,0.72)] max-[809px]:h-[64px]'
               }`}
             >
               <span className="absolute left-5 top-4 text-[10px] uppercase tracking-[0.2em] opacity-70">{String(i + 1).padStart(2, '0')}</span>
-              {open && <span className="absolute right-5 top-4 text-[18px] leading-none" aria-hidden>↖</span>}
-              {open ? (
-                <span className="absolute inset-x-6 bottom-6 block max-[809px]:relative max-[809px]:inset-auto max-[809px]:px-5 max-[809px]:pb-6 max-[809px]:pt-12">
-                  {it.group && <span className="block text-[9px] uppercase tracking-[0.2em] opacity-60">{it.group}</span>}
-                  <span className="mt-3 block max-w-[26ch] text-[clamp(1.3rem,2vw,1.9rem)] leading-[1.15] tracking-[-0.02em]" style={display}>{it.label}</span>
-                  {it.detail && <span className="mt-4 block max-w-[46ch] text-[13px] leading-[1.7] opacity-75">{it.detail}</span>}
-                </span>
-              ) : (
-                <span className="absolute inset-x-5 bottom-5 block text-[12px] leading-[1.35] tracking-[0.01em] opacity-90 max-[809px]:bottom-auto max-[809px]:top-1/2 max-[809px]:left-14 max-[809px]:-translate-y-1/2 max-[809px]:text-[13px]" style={display}>{it.label}</span>
-              )}
+              <span className={`absolute right-5 top-4 text-[18px] leading-none transition-opacity duration-300 ${open ? 'opacity-100 delay-300' : 'opacity-0'}`} aria-hidden>↖</span>
+              {/* compact layer */}
+              <span
+                className={`absolute bottom-5 left-5 block w-[112px] text-[12px] leading-[1.35] tracking-[0.01em] transition-opacity duration-300 max-[809px]:bottom-auto max-[809px]:left-14 max-[809px]:top-1/2 max-[809px]:w-[70%] max-[809px]:-translate-y-1/2 max-[809px]:text-[13px] ${open ? 'opacity-0' : 'opacity-90 delay-150'}`}
+                style={display}
+                aria-hidden={open}
+              >
+                {it.label}
+              </span>
+              {/* open layer */}
+              <span
+                className={`absolute bottom-6 left-6 block w-[440px] max-w-[calc(100%-3rem)] transition-opacity duration-300 max-[809px]:w-[calc(100%-2.5rem)] ${open ? 'opacity-100 delay-300' : 'opacity-0'}`}
+                aria-hidden={!open}
+              >
+                {it.group && <span className="block text-[9px] uppercase tracking-[0.2em] opacity-60">{it.group}</span>}
+                <span className="mt-3 block text-[clamp(1.3rem,2vw,1.9rem)] leading-[1.15] tracking-[-0.02em]" style={display}>{it.label}</span>
+                {it.detail && <span className="mt-4 block text-[13px] leading-[1.7] opacity-75">{it.detail}</span>}
+              </span>
             </button>
           );
         })}
       </div>
       <div className="mt-6 flex items-center justify-between gap-6">
         <div className="h-px w-[160px] bg-[rgba(242,238,231,0.25)]">
-          <div className="h-px bg-[#f2eee7] transition-[width] duration-500" style={{ width: `${((active + 1) / n) * 100}%` }} />
+          <div className="h-px bg-[#f2eee7] transition-[width] duration-700" style={{ width: `${((active + 1) / n) * 100}%` }} />
         </div>
         <div className="flex gap-2">
           <button type="button" onClick={() => go(active - 1)} aria-label="Previous seminar" className="flex h-10 w-10 cursor-pointer items-center justify-center bg-[rgba(15,16,14,0.55)] text-[#f2eee7] backdrop-blur-sm transition-colors hover:bg-[#0f100e]">←</button>
