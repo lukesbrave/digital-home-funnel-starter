@@ -127,7 +127,8 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       kind: 'value-stack',
       headline: 'Seven seminars that change what money does around you.',
       emphasis: 'around you.',
-      body: 'Each one in full, with the one line Paul uses to open it.',
+      body: 'Each one in full, with the one line Paul uses to open it. Move through them.',
+      image: { src: `${IMG}/andaz-studio-rounds.jpg`, alt: 'Where the seminars were taught' },
       buttonLabel: 'Yes, I want the seven seminars',
       items: [
         { label: 'A Radical New Discovery', detail: 'How your money brain is wired.', group: 'The wiring' },

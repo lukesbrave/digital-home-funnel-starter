@@ -173,8 +173,10 @@ export type SalesSection =
   /** The value stack: every piece inside the offer, numbered, each
    *  with an optional worth, and a total line the price then undercuts. */
   | { kind: 'value-stack'; kicker?: string; headline: string; emphasis?: string; body?: string;
-      /** `group` starts a new labelled run of rows (a day, a module). */
+      /** `group` labels a run of items (a module, a theme). */
       items: { label: string; detail?: string; value?: string; group?: string }[];
+      /** A photograph behind the items (editorial renders the items as an expanding row over it). */
+      image?: SalesImage;
       total?: { label: string; value: string }; buttonLabel?: string }
   | { kind: 'proof'; kicker?: string; headline: string; emphasis?: string;
       quotes: { quote: string; who: string; role?: string }[] }

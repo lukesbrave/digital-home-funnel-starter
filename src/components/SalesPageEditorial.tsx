@@ -325,6 +325,60 @@ function Column({ kicker, headline, emphasis, paragraphs, buttonLabel, tone, chi
   );
 }
 
+/**
+ * The seminars as a row of cards along the bottom of a photograph. One is
+ * open at a time as the hero's black panel; the rest sit compressed and
+ * shift as the open one moves. Click a card or use the arrows. Under 810px
+ * the row becomes a stack with the open card expanded in place.
+ */
+function ExpandingRow({ items }: { items: { label: string; detail?: string; group?: string }[] }) {
+  const [active, setActive] = useState(0);
+  const n = items.length;
+  const go = (i: number) => setActive((i + n) % n);
+  return (
+    <div>
+      <div className="flex gap-2 max-[809px]:flex-col">
+        {items.map((it, i) => {
+          const open = i === active;
+          return (
+            <button
+              key={it.label}
+              type="button"
+              onClick={() => setActive(i)}
+              aria-expanded={open}
+              style={{ flexGrow: open ? 3.4 : 1, flexBasis: 0 }}
+              className={`group relative min-w-0 overflow-hidden text-left transition-[flex-grow,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] max-[809px]:w-full ${
+                open ? 'h-[280px] bg-[#0f100e] text-[#f2eee7] max-[809px]:h-auto' : 'h-[280px] bg-[rgba(15,16,14,0.55)] text-[#f2eee7] backdrop-blur-sm hover:bg-[rgba(15,16,14,0.75)] max-[809px]:h-[64px]'
+              }`}
+            >
+              <span className="absolute left-5 top-4 text-[10px] uppercase tracking-[0.2em] opacity-70">{String(i + 1).padStart(2, '0')}</span>
+              {open && <span className="absolute right-5 top-4 text-[18px] leading-none" aria-hidden>↖</span>}
+              {open ? (
+                <span className="absolute inset-x-6 bottom-6 block max-[809px]:relative max-[809px]:inset-auto max-[809px]:px-5 max-[809px]:pb-6 max-[809px]:pt-12">
+                  {it.group && <span className="block text-[9px] uppercase tracking-[0.2em] opacity-60">{it.group}</span>}
+                  <span className="mt-3 block max-w-[26ch] text-[clamp(1.3rem,2vw,1.9rem)] leading-[1.15] tracking-[-0.02em]" style={display}>{it.label}</span>
+                  {it.detail && <span className="mt-4 block max-w-[46ch] text-[13px] leading-[1.7] opacity-75">{it.detail}</span>}
+                </span>
+              ) : (
+                <span className="absolute inset-x-5 bottom-5 block text-[12px] leading-[1.35] tracking-[0.01em] opacity-90 max-[809px]:bottom-auto max-[809px]:top-1/2 max-[809px]:left-14 max-[809px]:-translate-y-1/2 max-[809px]:text-[13px]" style={display}>{it.label}</span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+      <div className="mt-6 flex items-center justify-between gap-6">
+        <div className="h-px w-[160px] bg-[rgba(242,238,231,0.25)]">
+          <div className="h-px bg-[#f2eee7] transition-[width] duration-500" style={{ width: `${((active + 1) / n) * 100}%` }} />
+        </div>
+        <div className="flex gap-2">
+          <button type="button" onClick={() => go(active - 1)} aria-label="Previous seminar" className="flex h-10 w-10 cursor-pointer items-center justify-center bg-[rgba(15,16,14,0.55)] text-[#f2eee7] backdrop-blur-sm transition-colors hover:bg-[#0f100e]">←</button>
+          <button type="button" onClick={() => go(active + 1)} aria-label="Next seminar" className="flex h-10 w-10 cursor-pointer items-center justify-center bg-[rgba(15,16,14,0.55)] text-[#f2eee7] backdrop-blur-sm transition-colors hover:bg-[#0f100e]">→</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /** A pull quote in the column: the line the reader is meant to stop on. */
 function PullLine({ children }: { children: React.ReactNode }) {
   return (
@@ -538,47 +592,37 @@ function Section({ section }: { section: SalesSection }) {
       );
     }
 
-    /* 7. The programme: the seminars as a full-width table, grouped by day,
-       the anchor as a black strip across the bottom, the button after. */
+    /* 7. The programme: a photograph band, the words at the top, the
+       seminars as an expanding row along the bottom, the anchor beneath. */
     case 'value-stack': {
-      const tone: Tone = 'cream';
-      const rows = section.items.map((it, i) => ({ ...it, showGroup: Boolean(it.group) && it.group !== section.items[i - 1]?.group }));
       return (
-        <div className={`${toneClass[tone]} ${SECTION}`}>
-          <div className={`${WIDE} ${BLOCK_GAP}`}>
+        <div className="relative overflow-hidden bg-[#151713] text-[#f2eee7]">
+          {section.image && (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,7,.72),rgba(8,9,7,.35)_45%,rgba(8,9,7,.7))]" />
+            </>
+          )}
+          <div className={`relative ${WIDE} ${SECTION} !px-0`}>
             <Reveal>
-              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body ? [section.body] : undefined} tone={tone} />
+              <div className="max-w-[560px] px-7 max-[809px]:px-5">
+                <Display text={section.headline} emphasis={section.emphasis} />
+                {section.body && <p className={`mt-6 max-w-[460px] ${T_BODY_SM} opacity-80`}>{section.body}</p>}
+              </div>
             </Reveal>
-            <Reveal>
-              <ol className={`mx-auto max-w-[1100px] border-t ${rule(tone)}`}>
-                {rows.map((it, i) => {
-                  return (
-                    <li key={it.label}>
-                      {it.showGroup && (
-                        <p className={`border-b ${rule(tone)} pb-4 ${i === 0 ? 'pt-4' : 'pt-14'} ${T_META} ${muted(tone)}`}>{it.group}</p>
-                      )}
-                      <div className={`grid grid-cols-[56px_1fr_1fr_auto] items-baseline gap-6 border-b ${rule(tone)} py-5 max-[809px]:grid-cols-[40px_1fr_auto]`}>
-                        <span className={`${T_META} ${muted(tone)}`}>{String(i + 1).padStart(2, '0')}</span>
-                        <span className="text-[clamp(1.1rem,1.5vw,1.4rem)] leading-[1.2] tracking-[-0.015em]" style={display}>{it.label}</span>
-                        {it.detail && <span className={`${T_BODY_SM} ${muted(tone)} max-[809px]:col-span-3 max-[809px]:col-start-2`}>{it.detail}</span>}
-                        {it.value && <span className={`${T_META} ${muted(tone)}`}>{it.value}</span>}
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
-              {section.total && (
-                <BlackPanel className="mx-auto mt-8 flex max-w-[1100px] items-end justify-between gap-6 p-7 pt-16">
-                  <span className={`${T_META} opacity-70`}>{section.total.label}</span>
-                  <span className="text-[clamp(2.2rem,3.6vw,3.6rem)] leading-none" style={display}>{section.total.value}</span>
-                </BlackPanel>
-              )}
+            <Reveal className="mt-[clamp(3rem,6vw,6rem)] px-7 max-[809px]:px-5">
+              <ExpandingRow items={section.items} />
             </Reveal>
-            {section.buttonLabel && (
-              <Reveal>
-                <div className="flex justify-center">
-                  <Cta label={section.buttonLabel} variant="solid" />
-                </div>
+            {(section.total || section.buttonLabel) && (
+              <Reveal className="mt-12 flex flex-wrap items-center justify-between gap-8 px-7 max-[809px]:px-5">
+                {section.total && (
+                  <p className="flex items-baseline gap-4">
+                    <span className={`${T_META} opacity-70`}>{section.total.label}</span>
+                    <span className="text-[clamp(1.8rem,2.8vw,2.8rem)] leading-none" style={display}>{section.total.value}</span>
+                  </p>
+                )}
+                {section.buttonLabel && <Cta label={section.buttonLabel} variant="cream" />}
               </Reveal>
             )}
           </div>
