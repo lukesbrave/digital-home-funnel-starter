@@ -26,12 +26,11 @@ import CheckoutModal, { OpenCheckoutContext, useOpenCheckout } from './CheckoutM
 /* The event page's type scale and rhythm, verbatim. */
 const SECTION = 'px-7 py-[clamp(4.5rem,9vw,8rem)] max-[809px]:px-5';
 const BLOCK_GAP = 'space-y-[clamp(3rem,5.5vw,5.5rem)]';
-const T_DISPLAY = 'text-[clamp(2.7rem,5.6vw,5.9rem)] leading-[0.92] tracking-[-0.04em]';
+/* Section headlines take the hero's sentence scale, never display size. */
+const T_DISPLAY = 'text-[clamp(1.9rem,3vw,3rem)] leading-[1.12] tracking-[-0.03em]';
 const T_SUBHEAD = 'text-[clamp(1.35rem,1.9vw,1.8rem)] leading-[1.1] tracking-[-0.02em]';
-const T_BODY = 'text-[clamp(1.02rem,1.32vw,1.22rem)] leading-[1.78]';
 const T_BODY_SM = 'text-[clamp(0.95rem,1.1vw,1.03rem)] leading-[1.8]';
 const T_META = 'text-[10px] uppercase tracking-[0.2em]';
-const MEASURE = 'mx-auto max-w-[760px]';
 const WIDE = 'mx-auto max-w-[1380px]';
 
 /* Grounds. Cream and claret come from the theme; the photo sections sit on
@@ -66,11 +65,6 @@ function Reveal({ children, className = '' }: { children: React.ReactNode; class
   );
 }
 
-/** "/ Label": the event page's eyebrow. */
-function Label({ children }: { children: React.ReactNode }) {
-  return <p className="text-[10px] font-medium uppercase tracking-[0.22em] opacity-70">/ {children}</p>;
-}
-
 /** A headline with its emphasised words in italic. */
 function Emphasis({ text, emphasis }: { text: string; emphasis?: string }) {
   if (!emphasis) return <>{text}</>;
@@ -87,25 +81,9 @@ function Emphasis({ text, emphasis }: { text: string; emphasis?: string }) {
 
 function Display({ text, emphasis, center = false, className = '' }: { text: string; emphasis?: string; center?: boolean; className?: string }) {
   return (
-    <h2 className={`text-balance ${T_DISPLAY} ${center ? 'mx-auto max-w-[1100px] text-center' : 'max-w-[920px]'} ${className}`} style={display}>
+    <h2 className={`text-balance ${T_DISPLAY} ${center ? 'mx-auto max-w-[640px] text-center' : 'max-w-[600px]'} ${className}`} style={display}>
       <Emphasis text={text} emphasis={emphasis} />
     </h2>
-  );
-}
-
-function Figure({ image, tone }: { image: SalesImage; tone: Tone }) {
-  return (
-    <Reveal>
-      <figure>
-        <div className="relative aspect-[2.1] w-full overflow-hidden max-[809px]:aspect-[1.35]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image.src} alt={image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-        </div>
-        {image.caption && (
-          <figcaption className={`mt-5 text-center text-[10px] uppercase tracking-[0.18em] ${muted(tone)}`}>{image.caption}</figcaption>
-        )}
-      </figure>
-    </Reveal>
   );
 }
 
@@ -113,12 +91,14 @@ function Figure({ image, tone }: { image: SalesImage; tone: Tone }) {
 function Cta({ label, variant, className = '' }: { label: string; variant: 'solid' | 'cream' | 'link'; className?: string }) {
   const ref = useReferralCode();
   const openCheckout = useOpenCheckout();
+  const button =
+    'inline-flex h-[62px] cursor-pointer items-center justify-center px-12 text-center text-[11px] font-semibold uppercase leading-tight tracking-[0.22em] transition-transform duration-300 hover:-translate-y-0.5 max-[809px]:h-auto max-[809px]:min-h-[58px] max-[809px]:px-7 max-[809px]:py-4';
   const base =
     variant === 'link'
       ? 'inline-flex cursor-pointer items-center border-b border-current pb-2 text-[10px] font-semibold uppercase tracking-[0.2em] transition-opacity hover:opacity-65'
       : variant === 'cream'
-        ? 'inline-flex h-[54px] cursor-pointer items-center justify-center bg-[var(--background)] px-10 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--ink)] transition-opacity hover:opacity-90'
-        : 'inline-flex h-[54px] cursor-pointer items-center justify-center bg-[var(--ink)] px-10 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--background)] transition-opacity hover:opacity-90';
+        ? `${button} bg-[var(--background)] text-[var(--ink)] shadow-[0_22px_48px_rgba(0,0,0,0.35)]`
+        : `${button} bg-[var(--ink)] text-[var(--background)] shadow-[0_22px_48px_rgba(71,20,26,0.28)]`;
   const text = variant === 'link' ? `${label} ↗` : label;
   const onClick = () => trackEvent('cta_click', { data: { cta: CTA.kind } });
 
@@ -173,11 +153,7 @@ function SplitHero({ section }: { section: Extract<SalesSection, { kind: 'hero' 
         <p className="rise rise-3 mt-7 max-w-[480px] text-[14px] leading-[1.75] opacity-75">{section.subheadline}</p>
         {/* One button, big enough to be the point of the column. */}
         <div className="rise rise-4 mt-9 flex flex-col items-center gap-5">
-          <Cta
-            label={section.buttonLabel}
-            variant="solid"
-            className="!h-[62px] !px-12 !text-[11px] !tracking-[0.22em] shadow-[0_22px_48px_rgba(71,20,26,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
-          />
+          <Cta label={section.buttonLabel} variant="solid" />
           {section.microcopy && <p className="max-w-[320px] text-[10px] leading-[1.7] opacity-60">{section.microcopy}</p>}
           {section.secondaryLabel && (
             <a href="#next" className="border-b border-current/50 pb-2 text-[10px] font-semibold uppercase tracking-[0.2em] opacity-80">
@@ -315,6 +291,41 @@ function Hero({ section }: { section: Extract<SalesSection, { kind: 'hero' }> })
   );
 }
 
+/** The hero's black rectangle: arrow mark top-left, content below. */
+function BlackPanel({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`relative bg-[#0f100e] text-[#f2eee7] ${className}`}>
+      <span className="absolute left-6 top-5 text-[20px] leading-none" aria-hidden>↖</span>
+      {children}
+    </div>
+  );
+}
+
+/** A text column in the hero's manner: centred, eyebrow, headline, prose, button. */
+function Column({ kicker, headline, emphasis, paragraphs, buttonLabel, tone, children }: {
+  kicker?: string; headline: string; emphasis?: string; paragraphs?: string[]; buttonLabel?: string; tone: Tone; children?: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col items-center text-center">
+      {kicker && <p className="mb-7 text-[10px] font-medium uppercase tracking-[0.26em] opacity-70">{kicker}</p>}
+      <Display text={headline} emphasis={emphasis} center />
+      {paragraphs && paragraphs.length > 0 && (
+        <div className="mt-7 max-w-[520px] space-y-5">
+          {paragraphs.map((para, i) => (
+            <p key={i} className={`${T_BODY_SM} ${i === 0 ? 'opacity-85' : muted(tone)}`}>{para}</p>
+          ))}
+        </div>
+      )}
+      {children}
+      {buttonLabel && (
+        <div className="mt-9">
+          <Cta label={buttonLabel} variant={tone === 'cream' ? 'solid' : 'cream'} />
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Rows({ items, tone, numerals = true }: { items: { title: string; body?: string; aside?: string }[]; tone: Tone; numerals?: boolean }) {
   return (
     <ol className={`border-t ${rule(tone)}`}>
@@ -337,26 +348,25 @@ function Section({ section }: { section: SalesSection }) {
     case 'hero':
       return <Hero section={section} />;
 
+    /* Text column beside a photograph, the hero's own shape. */
     case 'problem': {
       const tone: Tone = 'cream';
       return (
-        <div className={`${toneClass[tone]} ${SECTION}`}>
-          <div className={`${WIDE} ${BLOCK_GAP}`}>
-            <Reveal>
-              <div className="flex flex-col items-center gap-[clamp(1.75rem,2.6vw,2.5rem)]">
-                {section.kicker && <Label>{section.kicker}</Label>}
-                <Display text={section.headline} emphasis={section.emphasis} center />
-              </div>
-            </Reveal>
-            <Reveal>
-              <div className={`${MEASURE} space-y-7`}>
-                {section.body.map((para, i) => (
-                  <p key={i} className={`${T_BODY} ${i === 0 ? '' : muted(tone)}`}>{para}</p>
-                ))}
-              </div>
-            </Reveal>
-            {section.image && <Figure image={section.image} tone={tone} />}
+        <div className={`${toneClass[tone]} grid grid-cols-[0.55fr_0.45fr] max-[809px]:grid-cols-1`}>
+          <div className={`flex items-center justify-center ${SECTION}`}>
+            <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body} tone={tone} />
           </div>
+          {section.image && (
+            <div className="relative min-h-[60vh] max-[809px]:min-h-[55vh]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              {section.image.caption && (
+                <BlackPanel className="absolute bottom-0 left-0 h-[110px] w-[230px]">
+                  <span className="absolute inset-x-5 bottom-4 block text-[9px] leading-[1.6] opacity-80">{section.image.caption}</span>
+                </BlackPanel>
+              )}
+            </div>
+          )}
         </div>
       );
     }
@@ -364,21 +374,20 @@ function Section({ section }: { section: SalesSection }) {
     case 'story': {
       const tone: Tone = 'dark';
       return (
-        <div className={`${toneClass[tone]} ${SECTION}`}>
-          <div className={`${WIDE} ${BLOCK_GAP}`}>
-            <Reveal>
-              <div className="flex flex-col items-center gap-[clamp(1.75rem,2.6vw,2.5rem)]">
-                {section.kicker && <Label>{section.kicker}</Label>}
-                <Display text={section.headline} emphasis={section.emphasis} center />
-                {section.body && <p className={`${MEASURE} text-center text-[clamp(1.1rem,1.5vw,1.35rem)] leading-[1.7] opacity-85`}>{section.body}</p>}
+        <div className={`${toneClass[tone]} grid grid-cols-[0.45fr_0.55fr] max-[809px]:grid-cols-1`}>
+          {section.image && (
+            <div className="relative min-h-[60vh] max-[809px]:order-2 max-[809px]:min-h-[50vh]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+            </div>
+          )}
+          <div className={`flex items-center justify-center ${SECTION}`}>
+            <div className="w-full max-w-[600px]">
+              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body ? [section.body] : undefined} tone={tone} />
+              <div className="mt-12">
+                <Rows items={section.steps.map((st) => ({ title: st.title, body: st.body }))} tone={tone} />
               </div>
-            </Reveal>
-            {section.image && <Figure image={section.image} tone={tone} />}
-            <Reveal>
-              <div className="mx-auto max-w-[1000px]">
-                <Rows items={section.steps.map((s) => ({ title: s.title, body: s.body }))} tone={tone} />
-              </div>
-            </Reveal>
+            </div>
           </div>
         </div>
       );
@@ -387,103 +396,50 @@ function Section({ section }: { section: SalesSection }) {
     case 'credentials': {
       const tone: Tone = 'cream';
       return (
-        <div className={`${toneClass[tone]} ${SECTION}`}>
-          <div className={`${WIDE} grid grid-cols-[1.1fr_0.9fr] gap-[8vw] max-[809px]:grid-cols-1 max-[809px]:gap-14`}>
-            <Reveal>
-              {section.kicker && <Label>{section.kicker}</Label>}
-              <Display text={section.headline} emphasis={section.emphasis} className="mt-[clamp(1.75rem,2.6vw,2.5rem)]" />
-              <div className="mt-9 max-w-[620px] space-y-7">
-                {section.body.map((para, i) => (
-                  <p key={i} className={`${T_BODY} ${i === 0 ? '' : muted(tone)}`}>{para}</p>
-                ))}
-              </div>
-            </Reveal>
-            <Reveal>
-              {section.image && (
-                <div className="relative aspect-[1.2] w-full overflow-hidden max-[809px]:aspect-[1.35]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-                </div>
-              )}
+        <div className={`${toneClass[tone]} grid grid-cols-[0.45fr_0.55fr] max-[809px]:grid-cols-1`}>
+          {section.image && (
+            <div className="relative min-h-[60vh] max-[809px]:min-h-[55vh]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+            </div>
+          )}
+          <div className={`flex items-center justify-center ${SECTION}`}>
+            <div className="w-full max-w-[560px]">
+              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body} tone={tone} />
               {section.facts && section.facts.length > 0 && (
-                <ul className={`${section.image ? 'mt-10' : ''} border-t ${rule(tone)}`}>
+                <ul className={`mt-10 border-t ${rule(tone)}`}>
                   {section.facts.map((f) => (
-                    <li key={f.label} className={`grid grid-cols-[1fr_auto] items-baseline gap-6 border-b ${rule(tone)} py-5`}>
+                    <li key={f.label} className={`grid grid-cols-[1fr_auto] items-baseline gap-6 border-b ${rule(tone)} py-4`}>
                       <span className={`${T_META} ${muted(tone)}`}>{f.label}</span>
-                      <span className={T_SUBHEAD} style={display}>{f.value}</span>
+                      <span className="text-[clamp(1.2rem,1.6vw,1.5rem)]" style={display}>{f.value}</span>
                     </li>
                   ))}
                 </ul>
               )}
-            </Reveal>
-          </div>
-        </div>
-      );
-    }
-
-    case 'scarcity':
-    case 'guarantee':
-    case 'warning': {
-      const tone: Tone = section.kind === 'scarcity' ? 'dark' : section.kind === 'warning' ? 'claret' : 'cream';
-      return (
-        <div className={`${toneClass[tone]} ${SECTION}`}>
-          <div className={`${WIDE} ${BLOCK_GAP}`}>
-            <Reveal>
-              <div className="flex flex-col items-center gap-[clamp(1.75rem,2.6vw,2.5rem)]">
-                {section.kicker && <Label>{section.kicker}</Label>}
-                <Display text={section.headline} emphasis={section.emphasis} center />
-              </div>
-            </Reveal>
-            <Reveal>
-              <div className={`${MEASURE} space-y-7`}>
-                {section.body.map((para, i) => (
-                  <p key={i} className={`${T_BODY} ${i === 0 ? '' : muted(tone)}`}>{para}</p>
-                ))}
-              </div>
-            </Reveal>
-            {section.kind !== 'scarcity' && section.buttonLabel && (
-              <Reveal>
-                <div className="flex justify-center">
-                  <Cta label={section.buttonLabel} variant={tone === 'claret' ? 'cream' : 'solid'} />
-                </div>
-              </Reveal>
-            )}
+            </div>
           </div>
         </div>
       );
     }
 
     case 'offer': {
-      const tone: Tone = 'claret';
+      const tone: Tone = 'cream';
       return (
-        <div className={`${toneClass[tone]} ${SECTION}`}>
-          <div className={`${WIDE} grid grid-cols-[1.1fr_0.9fr] gap-[9vw] max-[809px]:grid-cols-1 max-[809px]:gap-16`}>
+        <div className={`bg-[var(--background)] text-[var(--ink)] ${SECTION}`}>
+          <div className={`${WIDE} grid grid-cols-[0.5fr_0.5fr] items-center gap-[7vw] max-[809px]:grid-cols-1 max-[809px]:gap-12`}>
             <Reveal>
-              {section.kicker && <Label>{section.kicker}</Label>}
-              <Display text={section.headline} emphasis={section.emphasis} className="mt-[clamp(1.75rem,2.6vw,2.5rem)]" />
-              {section.body && <p className={`mt-9 max-w-[580px] ${T_BODY_SM} opacity-70`}>{section.body}</p>}
-              {section.buttonLabel && (
-                <div className="mt-12">
-                  <Cta label={section.buttonLabel} variant="cream" />
-                </div>
-              )}
+              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body ? [section.body] : undefined} buttonLabel={section.buttonLabel} tone={tone} />
             </Reveal>
             <Reveal>
-              <p className={`border-b ${rule(tone)} pb-5 ${T_META} opacity-60`}>Included</p>
-              <ul>
+              <ul className={`border-t ${rule(tone)}`}>
                 {section.items.map((item, i) => (
-                  <li key={item.label} className={`grid grid-cols-[44px_1fr_auto] gap-4 border-b ${rule(tone)} py-5 ${T_BODY_SM}`}>
-                    <span className="opacity-40">{String(i + 1).padStart(2, '0')}</span>
+                  <li key={item.label} className={`grid grid-cols-[40px_1fr_auto] items-start gap-4 border-b ${rule(tone)} py-5 ${T_BODY_SM}`}>
+                    <span className={`pt-0.5 ${T_META} ${muted(tone)}`}>{String(i + 1).padStart(2, '0')}</span>
                     <span>{item.label}</span>
-                    {item.tag && <span className={`whitespace-nowrap ${T_META} opacity-55`}>{item.tag}</span>}
+                    {item.tag && <span className={`whitespace-nowrap pt-0.5 ${T_META} ${muted(tone)}`}>{item.tag}</span>}
                   </li>
                 ))}
               </ul>
-              {section.image && (
-                <div className="mt-10">
-                  <Figure image={section.image} tone={tone} />
-                </div>
-              )}
             </Reveal>
           </div>
         </div>
@@ -493,30 +449,18 @@ function Section({ section }: { section: SalesSection }) {
     case 'value-stack': {
       const tone: Tone = 'cream';
       return (
-        <div className={`bg-[var(--background)] text-[var(--ink)] ${SECTION}`}>
-          <div className={`${WIDE} grid grid-cols-[1fr_1.1fr] gap-[8vw] max-[809px]:grid-cols-1 max-[809px]:gap-14`}>
-            <Reveal>
-              {section.kicker && <Label>{section.kicker}</Label>}
-              <Display text={section.headline} emphasis={section.emphasis} className="mt-[clamp(1.75rem,2.6vw,2.5rem)]" />
-              {section.body && <p className={`mt-9 max-w-[520px] ${T_BODY_SM} ${muted(tone)}`}>{section.body}</p>}
-              {section.buttonLabel && (
-                <div className="mt-12 max-[809px]:hidden">
-                  <Cta label={section.buttonLabel} variant="solid" />
-                </div>
-              )}
+        <div className={`${toneClass[tone]} ${SECTION}`}>
+          <div className={`${WIDE} grid grid-cols-[0.45fr_0.55fr] items-start gap-[7vw] max-[809px]:grid-cols-1 max-[809px]:gap-12`}>
+            <Reveal className="md:sticky md:top-24">
+              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body ? [section.body] : undefined} buttonLabel={section.buttonLabel} tone={tone} />
             </Reveal>
             <Reveal>
               <Rows items={section.items.map((it) => ({ title: it.label, body: it.detail, aside: it.value }))} tone={tone} />
               {section.total && (
-                <div className="flex items-baseline justify-between gap-6 py-7">
-                  <span className={`${T_META} ${muted(tone)}`}>{section.total.label}</span>
+                <BlackPanel className="mt-8 flex min-h-[150px] items-end justify-between gap-6 p-6 pt-14">
+                  <span className={`${T_META} opacity-70`}>{section.total.label}</span>
                   <span className="text-[clamp(2rem,3.2vw,3.2rem)] leading-none" style={display}>{section.total.value}</span>
-                </div>
-              )}
-              {section.buttonLabel && (
-                <div className="mt-6 hidden max-[809px]:block">
-                  <Cta label={section.buttonLabel} variant="solid" className="w-full" />
-                </div>
+                </BlackPanel>
               )}
             </Reveal>
           </div>
@@ -528,56 +472,76 @@ function Section({ section }: { section: SalesSection }) {
       const tone: Tone = 'dark';
       return (
         <div className={`${toneClass[tone]} ${SECTION}`}>
-          <div className={WIDE}>
-            {section.kicker && <Label>{section.kicker}</Label>}
-            <div className="mt-12 grid grid-cols-[0.7fr_1.3fr] gap-[8vw] max-[809px]:grid-cols-1 max-[809px]:gap-12">
-              <Display text={section.headline} emphasis={section.emphasis} className="leading-[0.9]" />
-              <div className="space-y-16">
-                {section.quotes.map((q) => (
-                  <Reveal key={q.who}>
-                    <figure className={`border-t ${rule(tone)} pt-8`}>
-                      <blockquote className="text-[clamp(1.6rem,2.8vw,3.1rem)] italic leading-[1.12] tracking-[-0.025em]" style={display}>
-                        “{q.quote}”
-                      </blockquote>
-                      <figcaption className="mt-10">
-                        <p className="text-[12px] font-semibold uppercase tracking-[0.16em]">{q.who}</p>
-                        {q.role && <p className="mt-2 text-[10px] uppercase tracking-[0.16em] opacity-45">{q.role}</p>}
-                      </figcaption>
-                    </figure>
-                  </Reveal>
-                ))}
-              </div>
+          <div className={`${WIDE} ${BLOCK_GAP}`}>
+            <Reveal>
+              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} tone={tone} />
+            </Reveal>
+            <div className="mx-auto grid max-w-[1100px] grid-cols-2 gap-10 max-[809px]:grid-cols-1">
+              {section.quotes.map((q) => (
+                <Reveal key={q.who}>
+                  <figure className={`flex h-full flex-col justify-between border-t ${rule(tone)} pt-7`}>
+                    <blockquote className="text-[clamp(1.25rem,1.8vw,1.7rem)] italic leading-[1.3] tracking-[-0.015em]" style={display}>
+                      “{q.quote}”
+                    </blockquote>
+                    <figcaption className="mt-8">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.16em]">{q.who}</p>
+                      {q.role && <p className="mt-2 text-[9px] uppercase tracking-[0.16em] opacity-50">{q.role}</p>}
+                    </figcaption>
+                  </figure>
+                </Reveal>
+              ))}
             </div>
           </div>
         </div>
       );
     }
 
+    case 'scarcity':
+    case 'guarantee':
+    case 'warning': {
+      const tone: Tone = section.kind === 'warning' ? 'dark' : 'cream';
+      return (
+        <div className={`${section.kind === 'guarantee' ? 'bg-[var(--background)] text-[var(--ink)]' : toneClass[tone]} ${SECTION}`}>
+          <div className={WIDE}>
+            <Reveal>
+              <Column
+                kicker={section.kicker}
+                headline={section.headline}
+                emphasis={section.emphasis}
+                paragraphs={section.body}
+                buttonLabel={section.kind === 'scarcity' ? undefined : section.buttonLabel}
+                tone={tone}
+              />
+            </Reveal>
+          </div>
+        </div>
+      );
+    }
+
+    /* The price card is the hero's black panel. */
     case 'pricing': {
-      const tone: Tone = 'claret';
+      const tone: Tone = 'cream';
       return (
         <div className={`${toneClass[tone]} ${SECTION}`}>
-          <div className={`${WIDE} grid grid-cols-[1.1fr_0.9fr] items-end gap-[9vw] max-[809px]:grid-cols-1 max-[809px]:gap-14`}>
+          <div className={`${WIDE} grid grid-cols-[0.5fr_0.5fr] items-center gap-[7vw] max-[809px]:grid-cols-1 max-[809px]:gap-12`}>
             <Reveal>
-              {section.kicker && <Label>{section.kicker}</Label>}
-              <Display text={section.headline} emphasis={section.emphasis} className="mt-[clamp(1.75rem,2.6vw,2.5rem)]" />
-              {section.body && <p className={`mt-9 max-w-[580px] ${T_BODY_SM} opacity-70`}>{section.body}</p>}
+              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body ? [section.body] : undefined} tone={tone} />
             </Reveal>
             <Reveal>
-              <div className={`flex flex-col border ${rule(tone)} bg-black/15 p-9 max-[809px]:p-6`}>
+              <BlackPanel className="mx-auto w-full max-w-[460px] p-8 pt-16 max-[809px]:p-6 max-[809px]:pt-14">
                 <div className="flex items-baseline justify-between gap-4">
-                  <p className={`${T_META} opacity-60`}>{section.cardLabel ?? 'Option 01'}</p>
-                  {section.priceNote && <p className={`${T_META} opacity-80`}>{section.priceNote}</p>}
+                  <p className={`${T_META} opacity-70`}>{section.cardLabel ?? 'The offer'}</p>
+                  {section.priceNote && <p className={`${T_META} opacity-70`}>{section.priceNote}</p>}
                 </div>
-                <div className="mt-8 flex items-baseline gap-4">
-                  <span className="text-[clamp(3.2rem,4.8vw,4.8rem)] leading-none" style={display}>{section.price}</span>
+                <div className="mt-8 flex items-baseline gap-3">
+                  <span className="text-[clamp(3rem,4.6vw,4.6rem)] leading-none" style={display}>{section.price}</span>
                   {section.currencyLabel && <span className={`${T_META} opacity-55`}>{section.currencyLabel}</span>}
                 </div>
-                <div className="mt-9">
-                  <Cta label={section.buttonLabel} variant="cream" className="w-full" />
+                <div className="mt-9 [&_button]:w-full [&_a]:w-full">
+                  <Cta label={section.buttonLabel} variant="cream" />
                 </div>
-                {section.guarantee && <p className={`mt-6 ${T_BODY_SM} opacity-60`}>{section.guarantee}</p>}
-              </div>
+                {section.guarantee && <p className="mt-6 text-[10px] leading-[1.7] opacity-60">{section.guarantee}</p>}
+              </BlackPanel>
             </Reveal>
           </div>
         </div>
@@ -588,47 +552,41 @@ function Section({ section }: { section: SalesSection }) {
       const tone: Tone = 'cream';
       return (
         <div className={`bg-[var(--background)] text-[var(--ink)] ${SECTION}`}>
-          <div className={WIDE}>
-            {section.kicker && <Label>{section.kicker}</Label>}
-            <div className="mt-[clamp(1.75rem,2.6vw,2.5rem)] grid grid-cols-[0.72fr_1.28fr] gap-[8vw] max-[809px]:grid-cols-1 max-[809px]:gap-10">
-              <h2 className="text-balance text-[clamp(2.7rem,3.5vw,3.9rem)] italic leading-[0.9] tracking-[-0.04em]" style={display}>
+          <div className={`${WIDE} grid grid-cols-[0.4fr_0.6fr] gap-[7vw] max-[809px]:grid-cols-1 max-[809px]:gap-10`}>
+            <div>
+              {section.kicker && <p className="mb-7 text-[10px] font-medium uppercase tracking-[0.26em] opacity-70">{section.kicker}</p>}
+              <h2 className={`text-balance ${T_DISPLAY} italic`} style={display}>
                 <Emphasis text={section.headline} emphasis={section.emphasis} />
               </h2>
-              <div className={`border-t ${rule(tone)}`}>
-                {section.items.map((item) => (
-                  <details key={item.q} className={`group border-b ${rule(tone)} py-6`}>
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-8 text-[12px] font-semibold uppercase tracking-[0.12em]">
-                      <span>{item.q}</span>
-                      <span className="text-xl font-normal transition-transform group-open:rotate-45">+</span>
-                    </summary>
-                    <p className={`max-w-[650px] pt-5 ${T_BODY_SM} ${muted(tone)}`}>{item.a}</p>
-                  </details>
-                ))}
-              </div>
+            </div>
+            <div className={`border-t ${rule(tone)}`}>
+              {section.items.map((item) => (
+                <details key={item.q} className={`group border-b ${rule(tone)} py-5`}>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-8 text-[11px] font-semibold uppercase tracking-[0.12em]">
+                    <span>{item.q}</span>
+                    <span className="text-xl font-normal transition-transform group-open:rotate-45">+</span>
+                  </summary>
+                  <p className={`max-w-[560px] pt-4 ${T_BODY_SM} ${muted(tone)}`}>{item.a}</p>
+                </details>
+              ))}
             </div>
           </div>
         </div>
       );
     }
 
+    /* The closing is the hero mirrored: photograph, then the column with the button. */
     case 'final-cta':
       return (
-        <div className={`relative flex min-h-[88vh] items-end overflow-hidden px-7 py-16 max-[809px]:px-5 ${section.image ? 'text-[#f5f0e7]' : toneClass.claret}`}>
-          {section.image && (
-            <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+        <div className="grid grid-cols-[0.55fr_0.45fr] max-[809px]:grid-cols-1">
+          <div className="relative min-h-[70vh] bg-[#151713] max-[809px]:min-h-[50vh]">
+            {section.image && (
+              // eslint-disable-next-line @next/next/no-img-element
               <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,7,.16),rgba(8,9,7,.82))]" />
-            </>
-          )}
-          <div className={`relative ${WIDE} flex w-full items-end justify-between gap-12 max-[809px]:flex-col max-[809px]:items-start`}>
-            <div>
-              {section.body && <p className={T_META}>{section.body}</p>}
-              <h2 className="mt-6 max-w-[920px] text-balance text-[clamp(2.7rem,5.6vw,5.9rem)] leading-[0.86] tracking-[-0.05em]" style={display}>
-                <Emphasis text={section.headline} emphasis={section.emphasis} />
-              </h2>
-            </div>
-            <Cta label={section.buttonLabel} variant="link" className="shrink-0" />
+            )}
+          </div>
+          <div className={`flex items-center justify-center bg-[var(--surface)] text-[var(--ink)] ${SECTION}`}>
+            <Column kicker={section.body} headline={section.headline} emphasis={section.emphasis} buttonLabel={section.buttonLabel} tone="cream" />
           </div>
         </div>
       );

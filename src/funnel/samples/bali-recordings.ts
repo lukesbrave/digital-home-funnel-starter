@@ -101,7 +101,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       emphasis: 'one thing it did not.',
       body:
         'The room heard each seminar once, live, with no way back. You get the full recordings, which means you can stop on the sentence that lands, return to it the next morning, and sit with it until it changes something in you. The people in the room would have paid for that. For you it is simply how it comes.',
-      buttonLabel: 'Get the recordings',
+      buttonLabel: 'Yes, I want every seminar from the room',
       items: [
         { label: "All seven of Paul's seminars, in full, in the order the room heard them", tag: 'recorded' },
         { label: 'The final-day Q&A, where the room put its own situations to Paul', tag: 'recorded' },
@@ -133,7 +133,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       headline: 'Seven seminars. The room paid $1,500 to sit in them.',
       emphasis: 'to sit in them.',
       body: 'Each one in full, as the room heard it, with the one-line brief Paul gave before he began.',
-      buttonLabel: 'Get the recordings',
+      buttonLabel: 'Yes, I want what the room paid for',
       items: [
         { label: 'A Radical New Discovery', detail: 'How your money brain is wired.' },
         { label: 'Predictive Models', detail: 'Consciousness and the predictive nature of the forecasting brain.' },
@@ -166,7 +166,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
         'You pay once and nothing follows. No subscription, no second door, no upsell waiting behind the first. Your link arrives at the email you check out with, and it stays yours.',
         'You are dealt with by a person. If something is wrong, or the recordings are not what you expected, your message is read and answered by a human who would rather fix it than be right about it.',
       ],
-      buttonLabel: 'Get the recordings',
+      buttonLabel: 'Yes, I want peace of mind about my future',
     },
     {
       kind: 'pricing',
@@ -179,7 +179,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       price: '$500',
       currencyLabel: 'USD',
       priceNote: 'One time',
-      buttonLabel: 'Get the recordings',
+      buttonLabel: 'Yes, give me access now',
       guarantee: 'Secure checkout by Stripe. One payment, no subscription. Your access link goes to the email you check out with.',
     },
     {
@@ -192,7 +192,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
         'A year from now you will be where you are today, with the same chart, the same resolve, and one more year of evidence that the problem is you. It is not you. It never was. But knowing that and having watched it taken apart are two different things, and only one of them changes what you do next.',
         'The people who do not come back to this later are not braver or richer than you. They noticed the pull while they were reading, and looked at it instead of away from it. That is the whole of what Paul teaches, in one decision. You can make it now.',
       ],
-      buttonLabel: 'Get the recordings',
+      buttonLabel: "Yes, I'm done with the pattern",
     },
     {
       kind: 'faq',
@@ -213,10 +213,10 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       body: 'P.S. Seven seminars · The final-day Q&A · One payment · Yours to keep',
       headline: "You had to be there. Now you don't.",
       emphasis: "Now you don't.",
-      buttonLabel: 'Get the recordings',
+      buttonLabel: 'Yes, I want peace of mind about my future',
       image: { src: `${IMG}/bali-scenery.jpg`, alt: 'Bali at golden hour' },
     },
   ],
-  stickyBar: { text: 'The Bali Chapter Recordings', buttonLabel: 'Get the recordings' },
+  stickyBar: { text: 'The Bali Chapter Recordings', buttonLabel: 'Yes, I want in' },
   footer: 'BraveBrand Events',
 };
