@@ -40,6 +40,12 @@ test('no narrator: no "we", no lines about the page itself', () => {
   assert.ok(!/this page/i.test(prose), 'the copy never talks about the page');
 });
 
+test('sells the content, not the event: no room, dates, venue or section eyebrows', () => {
+  const prose = SALES.sections.flatMap((s) => [s.kicker, s.eyebrow, s.headline, s.subheadline, s.body, s.microcopy, s.total?.label, s.cardLabel, s.panel?.label, s.panel?.caption, ...(s.items ?? []).flatMap((i) => [i.a, i.q, i.detail, i.label, i.group]), ...(s.steps ?? []).flatMap((x) => [x.title, x.body]), ...(s.quotes ?? []).map((q) => q.role)]).flat().filter(Boolean).join(' ') + ' ' + SALES.stickyBar.text;
+  assert.ok(!/\b(the room|Bali|Sanur|Andaz|Thursday|Friday|Sunday|October)\b/i.test(prose), 'no event talk in the copy');
+  for (const s of SALES.sections) assert.equal(s.kicker, undefined, `${s.kind} has no eyebrow`);
+});
+
 test('no partner terms and no invented proof', () => {
   for (const word of ['commission', 'partner', 'affiliate', 'payout']) assert.ok(!text.toLowerCase().includes(word), word);
   const proof = SALES.sections.find((s) => s.kind === 'proof');
