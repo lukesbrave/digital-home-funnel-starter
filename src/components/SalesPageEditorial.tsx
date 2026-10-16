@@ -555,7 +555,7 @@ function Section({ section }: { section: SalesSection }) {
                   return (
                     <li key={it.label}>
                       {it.showGroup && (
-                        <p className={`border-b ${rule(tone)} pb-3 pt-10 ${T_META} ${muted(tone)} first:pt-0`}>{it.group}</p>
+                        <p className={`border-b ${rule(tone)} pb-4 ${i === 0 ? 'pt-4' : 'pt-14'} ${T_META} ${muted(tone)}`}>{it.group}</p>
                       )}
                       <div className={`grid grid-cols-[56px_1fr_1fr_auto] items-baseline gap-6 border-b ${rule(tone)} py-5 max-[809px]:grid-cols-[40px_1fr_auto]`}>
                         <span className={`${T_META} ${muted(tone)}`}>{String(i + 1).padStart(2, '0')}</span>
