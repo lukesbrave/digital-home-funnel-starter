@@ -357,7 +357,7 @@ function ExpandingRow({ items }: { items: { label: string; detail?: string; grou
               <span className={`absolute right-5 top-4 text-[18px] leading-none transition-opacity duration-300 ${open ? 'opacity-100 delay-300' : 'opacity-0'}`} aria-hidden>↖</span>
               {/* compact layer */}
               <span
-                className={`absolute bottom-5 left-5 block w-[112px] text-[12px] leading-[1.35] tracking-[0.01em] transition-opacity duration-300 max-[809px]:bottom-auto max-[809px]:left-14 max-[809px]:top-1/2 max-[809px]:w-[70%] max-[809px]:-translate-y-1/2 max-[809px]:text-[13px] ${open ? 'opacity-0' : 'opacity-90 delay-150'}`}
+                className={`absolute bottom-5 left-5 block w-[calc(100%-2.5rem)] text-[12px] leading-[1.35] tracking-[0.01em] transition-opacity duration-300 max-[809px]:bottom-auto max-[809px]:left-14 max-[809px]:top-1/2 max-[809px]:w-[70%] max-[809px]:-translate-y-1/2 max-[809px]:text-[13px] ${open ? 'opacity-0' : 'opacity-90 delay-[450ms]'}`}
                 style={display}
                 aria-hidden={open}
               >
