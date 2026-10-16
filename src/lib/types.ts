@@ -143,7 +143,19 @@ export type SalesSection =
       /** The words of the headline set in italic (editorial layout), e.g. "recorded." */
       emphasis?: string;
       /** A quiet second link under the CTA that scrolls to the next section (editorial). */
-      secondaryLabel?: string }
+      secondaryLabel?: string;
+      /**
+       * Editorial hero shape. 'full' (default) is the full-bleed photograph or
+       * loop with the headline over it. 'split' is a cream column with the
+       * eyebrow, headline and a small inset picture beside a full-height
+       * photograph, with a dark square overlapping its corner that carries a
+       * looping clip (a person speaking) or a label.
+       */
+      variant?: 'full' | 'split';
+      /** Small picture under the headline (split only). */
+      inset?: SalesImage;
+      /** The square on the photograph's corner (split only). */
+      panel?: { video?: string; image?: string; label?: string; caption?: string } }
   | { kind: 'problem'; kicker?: string; headline: string; emphasis?: string; body: string[];
       image?: SalesImage }
   | { kind: 'story'; kicker?: string; headline: string; emphasis?: string; body?: string;

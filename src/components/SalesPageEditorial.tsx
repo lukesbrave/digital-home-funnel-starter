@@ -143,9 +143,79 @@ function Cta({ label, variant, className = '' }: { label: string; variant: 'soli
   );
 }
 
+function SplitHero({ section }: { section: Extract<SalesSection, { kind: 'hero' }> }) {
+  const reduceMotion = useReducedMotion();
+  const media = section.media;
+  const panel = section.panel;
+  return (
+    <div className="grid min-h-[100svh] grid-cols-[0.47fr_0.53fr] bg-[var(--surface)] text-[var(--ink)] max-[809px]:grid-cols-1">
+      <div className="relative flex flex-col items-center justify-center px-10 pb-12 pt-24 text-center max-[809px]:px-5 max-[809px]:pt-24 max-[809px]:pb-12">
+        {section.eyebrow && (
+          <p className="rise mb-8 text-[10px] font-medium uppercase tracking-[0.26em] opacity-70">{section.eyebrow}</p>
+        )}
+        <h1
+          className={`rise rise-2 text-balance ${
+            section.headline.length > 70
+              ? 'max-w-[560px] text-[clamp(1.7rem,2.5vw,2.6rem)] leading-[1.15] tracking-[-0.03em]'
+              : 'max-w-[560px] text-[clamp(2.6rem,4.4vw,4.6rem)] leading-[0.95] tracking-[-0.04em]'
+          }`}
+          style={display}
+        >
+          <Emphasis text={section.headline} emphasis={section.emphasis} />
+        </h1>
+        <p className="rise rise-3 mt-7 max-w-[480px] text-[14px] leading-[1.75] opacity-75">{section.subheadline}</p>
+        <div className="rise rise-4 mt-8 flex flex-wrap items-center justify-center gap-8">
+          <Cta label={section.buttonLabel} variant="link" />
+          {section.secondaryLabel && (
+            <a href="#next" className="border-b border-current/50 pb-2 text-[10px] font-semibold uppercase tracking-[0.2em] opacity-80">
+              {section.secondaryLabel}
+            </a>
+          )}
+        </div>
+        {section.inset && (
+          <div className="rise rise-4 mt-10 w-[min(240px,60%)]">
+            <div className="relative aspect-[1.6] w-full overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={section.inset.src} alt={section.inset.alt} className="absolute inset-0 h-full w-full object-cover" />
+            </div>
+          </div>
+        )}
+        {section.microcopy && (
+          <p className="rise rise-4 mt-8 max-w-[280px] text-[10px] leading-[1.7] opacity-60">{section.microcopy}</p>
+        )}
+      </div>
+      <div className="relative min-h-[60vh] overflow-hidden bg-[#151713] max-[809px]:min-h-[70vh]">
+        {media && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={media.image} alt={media.alt ?? ''} className="absolute inset-0 h-full w-full object-cover" />
+        )}
+        {panel && (
+          <div className="absolute bottom-0 right-0 aspect-square w-[46%] overflow-hidden bg-[#111210] text-[#f2eee7] max-[809px]:w-[52%]">
+            {panel.video && !reduceMotion ? (
+              <video src={panel.video} poster={panel.image} autoPlay muted loop playsInline preload="auto" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+            ) : panel.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={panel.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+            ) : null}
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,7,.25),rgba(8,9,7,.05)_40%,rgba(8,9,7,.6))]" />
+            <span className="absolute left-6 top-5 text-[22px] leading-none" aria-hidden>↖</span>
+            {panel.label && (
+              <p className="absolute inset-x-6 top-1/2 -translate-y-1/2 text-center text-[13px] font-medium tracking-[0.02em]">{panel.label}</p>
+            )}
+            {panel.caption && (
+              <p className="absolute inset-x-6 bottom-5 text-[9px] leading-[1.6] opacity-80">{panel.caption}</p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function Hero({ section }: { section: Extract<SalesSection, { kind: 'hero' }> }) {
   const reduceMotion = useReducedMotion();
   const media = section.media;
+  if (section.variant === 'split') return <SplitHero section={section} />;
   return (
     <div className="relative flex min-h-[100svh] flex-col overflow-hidden bg-[#151713] text-[#f2eee7]">
       {media && (
@@ -574,7 +644,7 @@ export default function SalesPageEditorial() {
     <OpenCheckoutContext.Provider value={openCheckout}>
       <main className="flex-1 bg-[var(--background)] text-[var(--ink)]">
         {/* Thin brand rail over the hero, then a sticky jump-nav in the event page's manner. */}
-        <header className="absolute inset-x-0 top-0 z-30 flex items-center justify-between px-7 py-6 text-[#f2eee7] max-[809px]:px-5">
+        <header className={`absolute inset-x-0 top-0 z-30 flex items-center justify-between px-7 py-6 max-[809px]:px-5 ${SALES.sections[0]?.kind === 'hero' && SALES.sections[0].variant === 'split' ? 'text-[var(--ink)]' : 'text-[#f2eee7]'}`}>
           <span className="text-[11px] font-semibold uppercase tracking-[0.3em]">{BRAND.wordmark}</span>
           <span className="text-[10px] uppercase tracking-[0.2em] opacity-70 max-[809px]:hidden">{SALES.stickyBar?.text}</span>
         </header>

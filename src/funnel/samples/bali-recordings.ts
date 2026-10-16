@@ -37,8 +37,13 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
         'Seven seminars recorded in the room at The Bali Chapter, where Paul Counsel, the mentor who warned of the 2008 crash in his books, takes apart the conditioning that keeps money leaving and shows what has to change in the person holding it. Everything the room learned, in the order it learned it, at your own pace.',
       buttonLabel: 'Get the recordings',
       secondaryLabel: 'Start with the hook',
-      microcopy: 'Seven seminars · The final-day Q&A · Recorded in the room',
-      media: { image: `${IMG}/bali-hero-poster.jpg`, video: `${IMG}/bali-hero-loop.mp4`, alt: 'Bali coastline at dusk' },
+      microcopy: 'Seven seminars and the final-day Q&A, recorded in the room at Andaz Bali, Sanur.',
+      variant: 'split',
+      media: { image: `${IMG}/paul-counsel-room.jpg`, alt: 'Paul Counsel teaching in the room at Andaz Bali' },
+      inset: { src: `${IMG}/andaz-studio-longtable.jpg`, alt: 'The studio at Andaz Bali' },
+      // The square carries a looping clip of Paul speaking. Until that clip is
+      // supplied as images/paul-loop.mp4, the hero loop stands in.
+      panel: { video: `${IMG}/bali-hero-loop.mp4`, image: `${IMG}/paul-counsel-interview-solo.jpg`, label: 'Paul Counsel, in the room', caption: 'October 2026. Seven seminars on why wealth does not happen for most people, and how it reverses.' },
     },
     {
       kind: 'problem',

@@ -49,6 +49,6 @@ test('no partner terms and no invented proof', () => {
 test('hero and closing carry media from the photo bank', () => {
   const hero = SALES.sections[0];
   assert.match(hero.media.image, /^\/images\/bali\//);
-  assert.match(hero.media.video, /\.mp4$/);
+  assert.match(hero.media.video ?? hero.panel?.video ?? '', /\.mp4$/, 'a loop plays in the hero, full-bleed or in the panel');
   assert.match(SALES.sections.at(-1).image.src, /^\/images\/bali\//);
 });
