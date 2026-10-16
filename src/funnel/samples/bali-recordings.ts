@@ -35,16 +35,14 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       emphasis: 'Peace of Mind',
       subheadline:
         'Seven seminars recorded in the room at The Bali Chapter, where Paul Counsel, the mentor who warned of the 2008 crash in his books, takes apart the conditioning that keeps money leaving and shows what has to change in the person holding it. Everything the room learned, in the order it learned it, at your own pace.',
-      buttonLabel: 'Get the recordings',
-      secondaryLabel: 'Start with the hook',
-      microcopy: 'Seven seminars and the final-day Q&A, recorded in the room at Andaz Bali, Sanur.',
+      buttonLabel: "Yes, show me what's been running me",
+      microcopy: 'Seven seminars and the final-day Q&A, recorded in the room at Andaz Bali.',
       variant: 'split',
       // The big picture is a silent loop of Paul speaking in the room; until
       // that clip is supplied as images/bali/paul-loop.mp4, the Bali loop
       // stands in over a still of the room. The black square opens a short
       // snippet with sound.
       media: { image: `${IMG}/paul-counsel-room.jpg`, video: `${IMG}/bali-hero-loop.mp4`, alt: 'Paul Counsel teaching in the room at Andaz Bali' },
-      inset: { src: `${IMG}/andaz-studio-longtable.jpg`, alt: 'The studio at Andaz Bali' },
       panel: {
         label: 'Watch a minute of Paul',
         caption: 'A short preview from the room at Andaz Bali, October 2026.',

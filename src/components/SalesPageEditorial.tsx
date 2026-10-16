@@ -171,8 +171,14 @@ function SplitHero({ section }: { section: Extract<SalesSection, { kind: 'hero' 
           <Emphasis text={section.headline} emphasis={section.emphasis} />
         </h1>
         <p className="rise rise-3 mt-7 max-w-[480px] text-[14px] leading-[1.75] opacity-75">{section.subheadline}</p>
-        <div className="rise rise-4 mt-8 flex flex-wrap items-center justify-center gap-8">
-          <Cta label={section.buttonLabel} variant="link" />
+        {/* One button, big enough to be the point of the column. */}
+        <div className="rise rise-4 mt-9 flex flex-col items-center gap-5">
+          <Cta
+            label={`${section.buttonLabel} ↗`}
+            variant="solid"
+            className="!h-[62px] !px-12 !text-[11px] !tracking-[0.22em] shadow-[0_22px_48px_rgba(71,20,26,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
+          />
+          {section.microcopy && <p className="max-w-[320px] text-[10px] leading-[1.7] opacity-60">{section.microcopy}</p>}
           {section.secondaryLabel && (
             <a href="#next" className="border-b border-current/50 pb-2 text-[10px] font-semibold uppercase tracking-[0.2em] opacity-80">
               {section.secondaryLabel}
@@ -186,9 +192,6 @@ function SplitHero({ section }: { section: Extract<SalesSection, { kind: 'hero' 
               <img src={section.inset.src} alt={section.inset.alt} className="absolute inset-0 h-full w-full object-cover" />
             </div>
           </div>
-        )}
-        {section.microcopy && (
-          <p className="rise rise-4 mt-8 max-w-[280px] text-[10px] leading-[1.7] opacity-60">{section.microcopy}</p>
         )}
       </div>
       <div className="relative min-h-[60vh] overflow-hidden bg-[#151713] max-[809px]:min-h-[70vh]">
