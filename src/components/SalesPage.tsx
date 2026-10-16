@@ -30,6 +30,7 @@ import { Eyebrow } from './LandingPage';
 import { buttonStyle, displayStyle, useTheme } from './ThemeProvider';
 import { SiteHeader, SiteFooter } from './SiteChrome';
 import CheckoutModal, { OpenCheckoutContext, useOpenCheckout } from './CheckoutModal';
+import SalesPageEditorial from './SalesPageEditorial';
 import type { Theme } from '@/themes';
 
 /** Band treatment per section kind: ground / surface / inverted. */
@@ -544,7 +545,12 @@ function Section({ section }: { section: SalesSection }) {
   }
 }
 
+/** Picks the composition SALES.layout asks for. */
 export default function SalesPage() {
+  return SALES.layout === 'editorial' ? <SalesPageEditorial /> : <SalesPageStack />;
+}
+
+function SalesPageStack() {
   const [showBar, setShowBar] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const openCheckout = useCallback(() => setCheckoutOpen(true), []);

@@ -130,30 +130,53 @@ export type FunnelType = 'quiz' | 'sales-page';
  * comes from the copy desk; this schema maps 1:1 to its output so
  * words flow in as data with no rewriting.
  */
+/** A picture a section may carry (the editorial layout renders it; the stack ignores it). */
+export interface SalesImage { src: string; alt: string; caption?: string }
+
 export type SalesSection =
   | { kind: 'hero'; eyebrow?: string; headline: string; subheadline: string;
       buttonLabel: string; microcopy?: string;
-      /** Optional stat card beside the hero (desktop). */
-      stats?: { label: string; value: string }[] }
-  | { kind: 'problem'; kicker?: string; headline: string; body: string[] }
-  | { kind: 'story'; kicker?: string; headline: string; body?: string;
-      steps: { title: string; body: string }[] }
-  | { kind: 'offer'; kicker?: string; headline: string; body?: string;
-      buttonLabel?: string; items: { label: string; tag?: string }[] }
+      /** Optional stat card beside the hero (stack layout, desktop). */
+      stats?: { label: string; value: string }[];
+      /** Full-bleed hero media (editorial layout): a still, or a silent loop over it. */
+      media?: { image: string; video?: string; alt?: string };
+      /** The words of the headline set in italic (editorial layout), e.g. "recorded." */
+      emphasis?: string;
+      /** A quiet second link under the CTA that scrolls to the next section (editorial). */
+      secondaryLabel?: string }
+  | { kind: 'problem'; kicker?: string; headline: string; emphasis?: string; body: string[];
+      image?: SalesImage }
+  | { kind: 'story'; kicker?: string; headline: string; emphasis?: string; body?: string;
+      steps: { title: string; body: string }[]; image?: SalesImage }
+  | { kind: 'offer'; kicker?: string; headline: string; emphasis?: string; body?: string;
+      buttonLabel?: string; items: { label: string; tag?: string }[]; image?: SalesImage }
   /** The value stack: every piece inside the offer, numbered, each
    *  with an optional worth, and a total line the price then undercuts. */
-  | { kind: 'value-stack'; kicker?: string; headline: string; body?: string;
+  | { kind: 'value-stack'; kicker?: string; headline: string; emphasis?: string; body?: string;
       items: { label: string; detail?: string; value?: string }[];
       total?: { label: string; value: string }; buttonLabel?: string }
-  | { kind: 'proof'; kicker?: string; headline: string;
-      quotes: { quote: string; who: string }[] }
-  | { kind: 'pricing'; kicker?: string; headline: string; price: string;
-      priceNote?: string; buttonLabel: string; guarantee?: string }
-  | { kind: 'faq'; kicker?: string; headline: string;
+  | { kind: 'proof'; kicker?: string; headline: string; emphasis?: string;
+      quotes: { quote: string; who: string; role?: string }[] }
+  | { kind: 'pricing'; kicker?: string; headline: string; emphasis?: string; body?: string;
+      price: string; priceNote?: string; buttonLabel: string; guarantee?: string;
+      /** Small label on the price card (editorial), e.g. "Option 01". */
+      cardLabel?: string;
+      /** Currency mark beside the price (editorial), e.g. "USD". */
+      currencyLabel?: string }
+  | { kind: 'faq'; kicker?: string; headline: string; emphasis?: string;
       items: { q: string; a: string }[] }
-  | { kind: 'final-cta'; headline: string; body?: string; buttonLabel: string };
+  | { kind: 'final-cta'; headline: string; emphasis?: string; body?: string; buttonLabel: string;
+      image?: SalesImage };
 
 export interface SalesPageConfig {
+  /**
+   * Which composition renders the sections. 'stack' (default) is the
+   * conversion stack: alternating bands, cards, boxed pricing. 'editorial'
+   * is the long-form event-page grammar: full-bleed media, serif display
+   * with one italic word, slash eyebrows, numbered hairline rows, claret
+   * bands. Same sections, same events, same CTA either way.
+   */
+  layout?: 'stack' | 'editorial';
   sections: SalesSection[];
   /** Small persistent CTA bar once the visitor scrolls past the hero. */
   stickyBar?: { text: string; buttonLabel: string };

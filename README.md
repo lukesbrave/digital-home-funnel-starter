@@ -70,6 +70,16 @@ answers, same result, no API keys required.
 CTA kinds: `book-call`, `checkout`, `external-link`, `lead-capture`,
 or `two-step-checkout` (see below). One CTA per funnel.
 
+Sales-page layouts (`layout` in `sales.ts`): `stack` (default), the
+conversion stack of alternating bands and cards, or `editorial`, the
+long-form event-page grammar: full-bleed hero media, serif display with
+one italic word (`emphasis`), slash eyebrows, numbered hairline rows,
+claret bands, a booking-style price card and a closing photograph.
+Same sections and events either way; `media`, `image`, `emphasis`,
+`cardLabel` and `currencyLabel` are editorial-only and ignored by the
+stack. `src/funnel/samples/bali-recordings.ts` is a complete editorial
+example.
+
 Sales-page sections (`sales.ts`, in order): `hero`, `problem`, `story`,
 `offer`, `value-stack` (every piece inside the offer, numbered, each
 with an optional worth and a total line the price then undercuts),
