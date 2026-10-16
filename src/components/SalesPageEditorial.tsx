@@ -37,7 +37,6 @@ const WIDE = 'mx-auto max-w-[1380px]';
    Tailwind only generates classes it can read at build time. */
 
 const display: React.CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 400 };
-const ease = [0.22, 1, 0.36, 1] as const;
 
 type Tone = 'cream' | 'dark' | 'claret';
 const toneClass: Record<Tone, string> = {
@@ -50,17 +49,31 @@ const muted = (tone: Tone) =>
 const rule = (tone: Tone) =>
   tone === 'cream' ? 'border-[color-mix(in_srgb,var(--ink)_22%,transparent)]' : 'border-current/22';
 
+/**
+ * Fade-and-rise on first sight, with two safety nets a stage demo needs:
+ * a plain IntersectionObserver rather than a library hook, and a timer that
+ * shows the block regardless after 2.5 seconds, so nothing can stay hidden.
+ */
 function Reveal({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(() => typeof IntersectionObserver === 'undefined');
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { setShown(true); io.disconnect(); }
+    }, { threshold: 0.05 });
+    io.observe(el);
+    const id = window.setTimeout(() => setShown(true), 2500);
+    return () => { io.disconnect(); window.clearTimeout(id); };
+  }, []);
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.8, ease }}
-      className={className}
+    <div
+      ref={ref}
+      className={`transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${shown ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'} ${className}`}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -326,46 +339,96 @@ function Column({ kicker, headline, emphasis, paragraphs, buttonLabel, tone, chi
 }
 
 /**
- * The seminars as a row of cards along the bottom of a photograph. One is
- * open at a time as the hero's black panel; the rest sit compressed and
- * shift as the open one moves. Click a card or use the arrows. Under 810px
- * the row becomes a stack with the open card expanded in place.
+ * The seminars as fixed-width cards on an endless horizontal track. The
+ * track holds four copies of the set; the open card always lives in the
+ * second copy, so there are always cards to the right of it and never bare
+ * background. Moving past either end scrolls smoothly into the next copy
+ * and then resets, unseen, to the equivalent card in the second copy. No
+ * card changes width except the one opening, so titles never reflow. It
+ * ticks forward on its own until someone touches it.
  */
+const COPIES = 4;
 function ExpandingRow({ items }: { items: { label: string; detail?: string; group?: string }[] }) {
-  const [active, setActive] = useState(0);
   const n = items.length;
-  const go = (i: number) => setActive((i + n) % n);
+  const [pos, setPos] = useState(0); // unbounded; the open item is pos mod n
+  const [touched, setTouched] = useState(false);
+  const track = useRef<HTMLDivElement>(null);
+  const cards = useRef<(HTMLButtonElement | null)[]>([]);
+  const active = ((pos % n) + n) % n;
+  const virtual = n + pos; // index into the four copies
+
+  const step = (compact: number, gap: number) => compact + gap;
+  const geometry = () => {
+    const t = track.current;
+    if (!t) return null;
+    const widths = cards.current.filter((c, i): c is HTMLButtonElement => Boolean(c) && i !== virtual).map((c) => c.offsetWidth);
+    const compact = widths.length ? Math.min(...widths) : 0;
+    const gap = parseFloat(getComputedStyle(t).columnGap) || 0;
+    return { t, s: step(compact, gap) };
+  };
+
+  // Scroll the open card to the front, then normalise back into the second copy.
+  useEffect(() => {
+    const g = geometry();
+    if (!g) return;
+    g.t.scrollTo({ left: virtual * g.s, behavior: 'smooth' });
+    if (pos < 0 || pos >= n) {
+      const id = window.setTimeout(() => {
+        const h = geometry();
+        if (!h) return;
+        const norm = ((pos % n) + n) % n;
+        h.t.scrollTo({ left: (n + norm) * h.s, behavior: 'instant' as ScrollBehavior });
+        setPos(norm);
+      }, 800);
+      return () => window.clearTimeout(id);
+    }
+  }, [pos, n]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Self-ticking until touched.
+  useEffect(() => {
+    if (touched) return;
+    const id = window.setInterval(() => setPos((p) => p + 1), 5000);
+    return () => window.clearInterval(id);
+  }, [touched]);
+
+  const choose = (v: number) => { setTouched(true); setPos(v - n); };
+  const go = (d: number) => { setTouched(true); setPos((p) => p + d); };
+
   return (
-    <div>
-      <div className="flex gap-2 max-[809px]:flex-col">
-        {items.map((it, i) => {
-          const open = i === active;
+    <div onMouseEnter={() => setTouched(true)}>
+      <div
+        ref={track}
+        className="relative -mx-7 flex gap-2 overflow-x-auto px-7 pb-1 [scrollbar-width:none] max-[809px]:-mx-5 max-[809px]:px-5 [&::-webkit-scrollbar]:hidden"
+      >
+        {Array.from({ length: COPIES * n }, (_, v) => {
+          const it = items[v % n];
+          const open = v === virtual;
           return (
-            /* Only the width animates. Both states are fixed-width layers that
-               crossfade, so no text rewraps while the card is moving. */
             <button
-              key={it.label}
+              key={v}
+              ref={(el) => { cards.current[v] = el; }}
               type="button"
-              onClick={() => setActive(i)}
+              onClick={() => choose(v)}
               aria-expanded={open}
-              style={{ flexGrow: open ? 3.4 : 1, flexBasis: 0 }}
-              className={`relative h-[280px] min-w-0 overflow-hidden text-left text-[#f2eee7] transition-[flex-grow,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[flex-grow] max-[809px]:w-full max-[809px]:transition-[height,background-color] ${
-                open ? 'bg-[#0f100e] max-[809px]:h-[300px]' : 'bg-[rgba(15,16,14,0.55)] backdrop-blur-sm hover:bg-[rgba(15,16,14,0.72)] max-[809px]:h-[64px]'
+              aria-hidden={v < n || v >= 2 * n ? true : undefined}
+              tabIndex={v < n || v >= 2 * n ? -1 : 0}
+              className={`relative h-[280px] shrink-0 overflow-hidden text-left text-[#f2eee7] transition-[width,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                open
+                  ? 'w-[460px] bg-[#0f100e] max-[809px]:w-[300px]'
+                  : 'w-[220px] bg-[rgba(15,16,14,0.55)] backdrop-blur-sm hover:bg-[rgba(15,16,14,0.72)] max-[809px]:w-[200px]'
               }`}
             >
-              <span className="absolute left-5 top-4 text-[10px] uppercase tracking-[0.2em] opacity-70">{String(i + 1).padStart(2, '0')}</span>
+              <span className="absolute left-5 top-4 text-[10px] uppercase tracking-[0.2em] opacity-70">{String((v % n) + 1).padStart(2, '0')}</span>
               <span className={`absolute right-5 top-4 text-[18px] leading-none transition-opacity duration-300 ${open ? 'opacity-100 delay-300' : 'opacity-0'}`} aria-hidden>↖</span>
-              {/* compact layer */}
               <span
-                className={`absolute bottom-5 left-5 block w-[calc(100%-2.5rem)] text-[12px] leading-[1.35] tracking-[0.01em] transition-opacity duration-300 max-[809px]:bottom-auto max-[809px]:left-14 max-[809px]:top-1/2 max-[809px]:w-[70%] max-[809px]:-translate-y-1/2 max-[809px]:text-[13px] ${open ? 'opacity-0' : 'opacity-90 delay-[450ms]'}`}
+                className={`absolute bottom-5 left-5 block w-[180px] text-[13px] leading-[1.35] tracking-[0.01em] transition-opacity duration-300 max-[809px]:w-[160px] ${open ? 'opacity-0' : 'opacity-90 delay-[400ms]'}`}
                 style={display}
                 aria-hidden={open}
               >
                 {it.label}
               </span>
-              {/* open layer */}
               <span
-                className={`absolute bottom-6 left-6 block w-[440px] max-w-[calc(100%-3rem)] transition-opacity duration-300 max-[809px]:w-[calc(100%-2.5rem)] ${open ? 'opacity-100 delay-300' : 'opacity-0'}`}
+                className={`absolute bottom-6 left-6 block w-[400px] transition-opacity duration-300 max-[809px]:w-[250px] ${open ? 'opacity-100 delay-300' : 'opacity-0'}`}
                 aria-hidden={!open}
               >
                 {it.group && <span className="block text-[9px] uppercase tracking-[0.2em] opacity-60">{it.group}</span>}
@@ -381,8 +444,8 @@ function ExpandingRow({ items }: { items: { label: string; detail?: string; grou
           <div className="h-px bg-[#f2eee7] transition-[width] duration-700" style={{ width: `${((active + 1) / n) * 100}%` }} />
         </div>
         <div className="flex gap-2">
-          <button type="button" onClick={() => go(active - 1)} aria-label="Previous seminar" className="flex h-10 w-10 cursor-pointer items-center justify-center bg-[rgba(15,16,14,0.55)] text-[#f2eee7] backdrop-blur-sm transition-colors hover:bg-[#0f100e]">←</button>
-          <button type="button" onClick={() => go(active + 1)} aria-label="Next seminar" className="flex h-10 w-10 cursor-pointer items-center justify-center bg-[rgba(15,16,14,0.55)] text-[#f2eee7] backdrop-blur-sm transition-colors hover:bg-[#0f100e]">→</button>
+          <button type="button" onClick={() => go(-1)} aria-label="Previous seminar" className="flex h-10 w-10 cursor-pointer items-center justify-center bg-[rgba(15,16,14,0.55)] text-[#f2eee7] backdrop-blur-sm transition-colors hover:bg-[#0f100e]">←</button>
+          <button type="button" onClick={() => go(1)} aria-label="Next seminar" className="flex h-10 w-10 cursor-pointer items-center justify-center bg-[rgba(15,16,14,0.55)] text-[#f2eee7] backdrop-blur-sm transition-colors hover:bg-[#0f100e]">→</button>
         </div>
       </div>
     </div>
