@@ -160,28 +160,28 @@ function Hero({ section }: { section: Extract<SalesSection, { kind: 'hero' }> })
       )}
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,7,.78),rgba(8,9,7,.5)_42%,rgba(8,9,7,.8))]" />
       <div className="relative z-10 flex min-h-[100svh] flex-col items-center justify-center px-5 pb-24 pt-28 text-center">
+        {/* CSS entrance only: a JS-driven entrance that never finishes leaves
+            the headline invisible, and a stage demo cannot carry that risk. */}
         {section.eyebrow && (
-          <motion.p initial={{ opacity: 0, letterSpacing: '0.46em' }} animate={{ opacity: 1, letterSpacing: '0.26em' }} transition={{ duration: 1, delay: 0.15, ease }} className="mb-7 text-[10px] font-medium uppercase">
-            {section.eyebrow}
-          </motion.p>
+          <p className="rise mb-7 text-[10px] font-medium uppercase tracking-[0.26em]">{section.eyebrow}</p>
         )}
         <div className="overflow-hidden py-2">
-          <motion.h1 initial={{ y: '110%', rotate: 2 }} animate={{ y: 0, rotate: 0 }} transition={{ duration: 1.35, delay: 0.2, ease }} className="max-w-[1100px] text-balance text-[clamp(3.4rem,7.5vw,7.6rem)] leading-[0.88] tracking-[-0.045em]" style={display}>
+          <h1 className="rise rise-2 max-w-[1100px] text-balance text-[clamp(3.4rem,7.5vw,7.6rem)] leading-[0.88] tracking-[-0.045em]" style={display}>
             <Emphasis text={section.headline} emphasis={section.emphasis} />
-          </motion.h1>
+          </h1>
         </div>
-        <motion.p initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.8, ease }} className="mt-8 max-w-[610px] text-[15px] leading-[1.75] tracking-[0.05em] text-white/82">
+        <p className="rise rise-3 mt-8 max-w-[610px] text-[15px] leading-[1.75] tracking-[0.05em] text-white/82">
           {section.subheadline}
-        </motion.p>
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 1.05 }} className="mt-10 flex flex-wrap items-center justify-center gap-8">
+        </p>
+        <div className="rise rise-4 mt-10 flex flex-wrap items-center justify-center gap-8">
           <Cta label={section.buttonLabel} variant="link" />
           {section.secondaryLabel && (
             <a href="#next" className="border-b border-white/50 pb-2 text-[10px] font-semibold uppercase tracking-[0.2em]">
               {section.secondaryLabel}
             </a>
           )}
-        </motion.div>
-        {section.microcopy && <p className="mt-6 text-[10px] uppercase tracking-[0.2em] text-white/60">{section.microcopy}</p>}
+        </div>
+        {section.microcopy && <p className="rise rise-4 mt-6 text-[10px] uppercase tracking-[0.2em] text-white/60">{section.microcopy}</p>}
       </div>
       <div className="absolute bottom-7 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-3 text-[9px] uppercase tracking-[0.22em]">
         <span>Scroll down</span>
