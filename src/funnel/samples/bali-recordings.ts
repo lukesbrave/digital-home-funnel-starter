@@ -39,11 +39,17 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       secondaryLabel: 'Start with the hook',
       microcopy: 'Seven seminars and the final-day Q&A, recorded in the room at Andaz Bali, Sanur.',
       variant: 'split',
-      media: { image: `${IMG}/paul-counsel-room.jpg`, alt: 'Paul Counsel teaching in the room at Andaz Bali' },
+      // The big picture is a silent loop of Paul speaking in the room; until
+      // that clip is supplied as images/bali/paul-loop.mp4, the Bali loop
+      // stands in over a still of the room. The black square opens a short
+      // snippet with sound.
+      media: { image: `${IMG}/paul-counsel-room.jpg`, video: `${IMG}/bali-hero-loop.mp4`, alt: 'Paul Counsel teaching in the room at Andaz Bali' },
       inset: { src: `${IMG}/andaz-studio-longtable.jpg`, alt: 'The studio at Andaz Bali' },
-      // The square carries a looping clip of Paul speaking. Until that clip is
-      // supplied as images/paul-loop.mp4, the hero loop stands in.
-      panel: { video: `${IMG}/bali-hero-loop.mp4`, image: `${IMG}/paul-counsel-interview-solo.jpg`, label: 'Paul Counsel, in the room', caption: 'October 2026. Seven seminars on why wealth does not happen for most people, and how it reverses.' },
+      panel: {
+        label: 'Watch a minute of Paul',
+        caption: 'A short preview from the room at Andaz Bali, October 2026.',
+        preview: { video: `${IMG}/bali-chapter.mp4`, poster: `${IMG}/bali-chapter-poster.jpg` },
+      },
     },
     {
       kind: 'problem',

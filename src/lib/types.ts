@@ -154,8 +154,13 @@ export type SalesSection =
       variant?: 'full' | 'split';
       /** Small picture under the headline (split only). */
       inset?: SalesImage;
-      /** The square on the photograph's corner (split only). */
-      panel?: { video?: string; image?: string; label?: string; caption?: string } }
+      /**
+       * The black square on the corner of the loop (split only). It is a
+       * button: pressing it opens `preview`, a short clip with sound, in an
+       * overlay. The big picture itself is `media`: a silent loop over a
+       * poster, or a still.
+       */
+      panel?: { label?: string; caption?: string; preview?: { video: string; poster?: string } } }
   | { kind: 'problem'; kicker?: string; headline: string; emphasis?: string; body: string[];
       image?: SalesImage }
   | { kind: 'story'; kicker?: string; headline: string; emphasis?: string; body?: string;

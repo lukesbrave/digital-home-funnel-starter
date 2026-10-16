@@ -147,6 +147,13 @@ function SplitHero({ section }: { section: Extract<SalesSection, { kind: 'hero' 
   const reduceMotion = useReducedMotion();
   const media = section.media;
   const panel = section.panel;
+  const [previewOpen, setPreviewOpen] = useState(false);
+  useEffect(() => {
+    if (!previewOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setPreviewOpen(false);
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [previewOpen]);
   return (
     <div className="grid min-h-[100svh] grid-cols-[0.47fr_0.53fr] bg-[var(--surface)] text-[var(--ink)] max-[809px]:grid-cols-1">
       <div className="relative flex flex-col items-center justify-center px-10 pb-12 pt-24 text-center max-[809px]:px-5 max-[809px]:pt-24 max-[809px]:pb-12">
@@ -185,29 +192,46 @@ function SplitHero({ section }: { section: Extract<SalesSection, { kind: 'hero' 
         )}
       </div>
       <div className="relative min-h-[60vh] overflow-hidden bg-[#151713] max-[809px]:min-h-[70vh]">
-        {media && (
+        {media && (media.video && !reduceMotion ? (
+          <video src={media.video} poster={media.image} autoPlay muted loop playsInline preload="auto" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={media.image} alt={media.alt ?? ''} className="absolute inset-0 h-full w-full object-cover" />
-        )}
+        ))}
         {panel && (
-          <div className="absolute bottom-0 right-0 aspect-square w-[46%] overflow-hidden bg-[#111210] text-[#f2eee7] max-[809px]:w-[52%]">
-            {panel.video && !reduceMotion ? (
-              <video src={panel.video} poster={panel.image} autoPlay muted loop playsInline preload="auto" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
-            ) : panel.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={panel.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
-            ) : null}
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,7,.25),rgba(8,9,7,.05)_40%,rgba(8,9,7,.6))]" />
-            <span className="absolute left-6 top-5 text-[22px] leading-none" aria-hidden>↖</span>
+          <button
+            type="button"
+            onClick={() => panel.preview && setPreviewOpen(true)}
+            aria-label={panel.preview ? `Play a preview: ${panel.label ?? 'clip'}` : panel.label}
+            className={`group absolute bottom-0 right-0 aspect-square w-[46%] bg-[#0f100e] text-left text-[#f2eee7] max-[809px]:w-[52%] ${panel.preview ? 'cursor-pointer' : 'cursor-default'}`}
+          >
+            <span className="absolute left-6 top-5 text-[22px] leading-none transition-transform duration-500 group-hover:-translate-x-1 group-hover:-translate-y-1" aria-hidden>↖</span>
             {panel.label && (
-              <p className="absolute inset-x-6 top-1/2 -translate-y-1/2 text-center text-[13px] font-medium tracking-[0.02em]">{panel.label}</p>
+              <span className="absolute inset-x-6 top-1/2 block -translate-y-1/2 text-center text-[13px] font-medium tracking-[0.02em]">{panel.label}</span>
             )}
             {panel.caption && (
-              <p className="absolute inset-x-6 bottom-5 text-[9px] leading-[1.6] opacity-80">{panel.caption}</p>
+              <span className="absolute inset-x-6 bottom-5 block text-[9px] leading-[1.6] opacity-80">{panel.caption}</span>
             )}
-          </div>
+          </button>
         )}
       </div>
+      {panel?.preview && previewOpen && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/85 p-5 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label={panel.label ?? 'Preview'}
+          onClick={() => setPreviewOpen(false)}
+        >
+          <div className="w-full max-w-[960px]" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between pb-4 text-[#f2eee7]">
+              <span className="text-[10px] uppercase tracking-[0.2em] opacity-70">{panel.label}</span>
+              <button type="button" onClick={() => setPreviewOpen(false)} className="cursor-pointer text-[10px] uppercase tracking-[0.2em] opacity-70 hover:opacity-100">Close</button>
+            </div>
+            <video src={panel.preview.video} poster={panel.preview.poster} controls autoPlay playsInline className="aspect-video w-full bg-black" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
