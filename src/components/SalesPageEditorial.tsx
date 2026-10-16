@@ -199,18 +199,34 @@ function SplitHero({ section }: { section: Extract<SalesSection, { kind: 'hero' 
           <img src={media.image} alt={media.alt ?? ''} className="absolute inset-0 h-full w-full object-cover" />
         ))}
         {panel && (
+          /* A small black rectangle in the corner. On hover it grows and a
+             thumbnail of the clip fades in, so it reads as a video before the
+             click. Touch screens have no hover, so under 810px the thumbnail
+             is always visible at the small size. */
           <button
             type="button"
             onClick={() => panel.preview && setPreviewOpen(true)}
             aria-label={panel.preview ? `Play a preview: ${panel.label ?? 'clip'}` : panel.label}
-            className={`group absolute bottom-0 right-0 aspect-square w-[46%] bg-[#0f100e] text-left text-[#f2eee7] max-[809px]:w-[52%] ${panel.preview ? 'cursor-pointer' : 'cursor-default'}`}
+            className={`group absolute bottom-0 right-0 h-[120px] w-[220px] overflow-hidden bg-[#0f100e] text-left text-[#f2eee7] transition-[width,height] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:h-[240px] hover:w-[360px] max-[809px]:h-[110px] max-[809px]:w-[190px] ${panel.preview ? 'cursor-pointer' : 'cursor-default'}`}
           >
-            <span className="absolute left-6 top-5 text-[22px] leading-none transition-transform duration-500 group-hover:-translate-x-1 group-hover:-translate-y-1" aria-hidden>↖</span>
+            {panel.preview?.poster && (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={panel.preview.poster}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100 max-[809px]:opacity-100"
+                />
+                <span className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,7,.55),rgba(8,9,7,.15)_45%,rgba(8,9,7,.8))] opacity-0 transition-opacity duration-500 group-hover:opacity-100 max-[809px]:opacity-100" aria-hidden />
+              </>
+            )}
+            <span className="absolute left-5 top-4 text-[20px] leading-none transition-transform duration-500 group-hover:-translate-x-1 group-hover:-translate-y-1" aria-hidden>↖</span>
+            <span className="absolute right-5 top-4 flex h-7 w-7 items-center justify-center rounded-full border border-current/60 text-[9px] opacity-0 transition-opacity duration-500 group-hover:opacity-100 max-[809px]:opacity-100" aria-hidden>▶</span>
             {panel.label && (
-              <span className="absolute inset-x-6 top-1/2 block -translate-y-1/2 text-center text-[13px] font-medium tracking-[0.02em]">{panel.label}</span>
+              <span className="absolute inset-x-5 bottom-4 block text-[12px] font-medium tracking-[0.02em]">{panel.label}</span>
             )}
             {panel.caption && (
-              <span className="absolute inset-x-6 bottom-5 block text-[9px] leading-[1.6] opacity-80">{panel.caption}</span>
+              <span className="absolute inset-x-5 bottom-10 block max-h-0 overflow-hidden text-[9px] leading-[1.6] opacity-0 transition-[max-height,opacity] duration-500 group-hover:max-h-12 group-hover:opacity-80">{panel.caption}</span>
             )}
           </button>
         )}
