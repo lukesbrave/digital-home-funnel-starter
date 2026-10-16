@@ -8,6 +8,8 @@
  * $1,500 seat price is the only comparison, no worth figures, no partner
  * terms, proof only from the event page, no em dashes, no invented numbers.
  *
+ * No price before step 7: the hero, its microcopy and the rail carry none.
+ *
  * Step map: hero = 1 (attention) · problem = 2 (pain stack) · story = 3 and
  * 4 (solution, stranger questions, credentials) · offer = 5 (benefits) ·
  * value-stack = 7 (the offer, anchored) · proof = 6 · pricing = 8, 9, 10
@@ -30,10 +32,10 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       headline: 'Your brain is working against your money.',
       emphasis: 'against your money.',
       subheadline:
-        'Not as a figure of speech. Seven sessions, recorded in a room in Bali, where Paul Counsel takes apart the machinery underneath every financial decision you have ever made, and shows what has to change before money stays. Yours to keep for $500.',
+        'Not as a figure of speech. Seven sessions, recorded in a room in Bali, where Paul Counsel takes apart the machinery underneath every financial decision you have ever made, and shows what has to change before money stays.',
       buttonLabel: 'Get the recordings',
       secondaryLabel: 'Start with the hook',
-      microcopy: 'One payment · $500 USD · Lifetime access',
+      microcopy: 'Seven sessions · The final-day Q&A · Recorded in the room',
       media: { image: `${IMG}/bali-hero-poster.jpg`, video: `${IMG}/bali-hero-loop.mp4`, alt: 'Bali coastline at dusk' },
     },
     {
@@ -151,6 +153,6 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       image: { src: `${IMG}/bali-scenery.jpg`, alt: 'Bali at golden hour' },
     },
   ],
-  stickyBar: { text: 'The Bali Chapter Recordings · $500 once', buttonLabel: 'Get the recordings' },
+  stickyBar: { text: 'The Bali Chapter Recordings', buttonLabel: 'Get the recordings' },
   footer: 'BraveBrand Events',
 };

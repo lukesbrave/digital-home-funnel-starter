@@ -26,6 +26,14 @@ test('the seat price is the only anchor and the early bird never appears', () =>
   assert.equal(SALES.sections.find((s) => s.kind === 'pricing').price, '$500');
 });
 
+test('no price before step seven: the hero and the rail carry none', () => {
+  const hero = SALES.sections[0];
+  const heroText = JSON.stringify(hero) + (SALES.stickyBar?.text ?? '');
+  assert.ok(!heroText.includes('$'), 'no dollar figure in the hero or the sticky bar text');
+  const firstPriced = SALES.sections.findIndex((s) => JSON.stringify(s).includes('$'));
+  assert.ok(firstPriced >= SALES.sections.findIndex((s) => s.kind === 'value-stack'), 'price appears no earlier than the value stack');
+});
+
 test('no partner terms and no invented proof', () => {
   for (const word of ['commission', 'partner', 'affiliate', 'payout']) assert.ok(!text.toLowerCase().includes(word), word);
   const proof = SALES.sections.find((s) => s.kind === 'proof');
