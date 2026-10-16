@@ -171,7 +171,7 @@ function Hero({ section }: { section: Extract<SalesSection, { kind: 'hero' }> })
           <h1
             className={`rise rise-2 text-balance ${
               section.headline.length > 70
-                ? 'max-w-[1108px] text-[clamp(2rem,3.5vw,3.5rem)] leading-[1.15] tracking-[-0.035em]'
+                ? 'max-w-[820px] text-[clamp(2rem,3.5vw,3.5rem)] leading-[1.15] tracking-[-0.035em]'
                 : 'max-w-[1100px] text-[clamp(3.4rem,7.5vw,7.6rem)] leading-[0.88] tracking-[-0.045em]'
             }`}
             style={display}

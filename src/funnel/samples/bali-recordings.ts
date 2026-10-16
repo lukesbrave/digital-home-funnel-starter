@@ -29,7 +29,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       kind: 'hero',
       eyebrow: 'The Bali Chapter · Paul Counsel · Recorded October 2026',
       headline:
-        'Five Days That Will Collapse Years of Financial Anxiety and Uncertainty About Your Future Into Peace of Mind, at the Exact Moment in History When That Matters Most.',
+        'Seven Seminars That Will Collapse Years of Financial Anxiety and Uncertainty About Your Future Into Peace of Mind, at the Exact Moment in History When That Matters Most.',
       emphasis: 'Peace of Mind',
       subheadline:
         'Seven sessions recorded in the room at The Bali Chapter, where Paul Counsel, the mentor who warned of the 2008 crash in his books, takes apart the conditioning that keeps money leaving and shows what has to change in the person holding it. Everything the room learned, in the order it learned it, at your own pace.',
