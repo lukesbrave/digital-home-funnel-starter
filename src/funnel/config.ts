@@ -56,7 +56,12 @@ export const OPT_IN: OptInConfig = {
   disclaimer: 'No spam. One useful email, then you decide.',
 };
 
-/** The single action the results page asks for. */
+/**
+ * The single action the results page (or sales page) asks for.
+ * Kinds: book-call, checkout, external-link, lead-capture,
+ * two-step-checkout (email modal, then checkout; example in
+ * sales.ts as SALES_CHECKOUT_CTA).
+ */
 export const CTA: CtaConfig = {
   kind: 'book-call',
   url: 'https://cal.com/your-name/intro',

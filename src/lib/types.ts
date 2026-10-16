@@ -55,7 +55,28 @@ export type CtaConfig =
    *  client_reference_id (src/lib/referral.ts). */
   | { kind: 'checkout'; url: string; label: string; note?: string }
   | { kind: 'external-link'; url: string; label: string; note?: string }
-  | { kind: 'lead-capture'; label: string; note?: string };
+  | { kind: 'lead-capture'; label: string; note?: string }
+  /**
+   * Two steps: a small modal takes the email (captured to the CRM,
+   * tagged checkout-started), then the visitor is sent to checkout.
+   * 'get' navigates to checkout.url with prefilled_email,
+   * client_reference_id (when a ref code is in the session) and every
+   * entry of fields as query params (the Stripe Payment Link shape).
+   * 'post' submits a hidden HTML form to checkout.url with email, ref
+   * (when present) and fields; the server answers with a 303 to the
+   * payment page. See src/lib/checkout.ts.
+   */
+  | { kind: 'two-step-checkout'; label: string; note?: string;
+      checkout: TwoStepCheckout;
+      /** Copy for the email modal. Sensible defaults when omitted. */
+      modal?: { headline?: string; body?: string; buttonLabel?: string } };
+
+export interface TwoStepCheckout {
+  url: string;
+  method: 'get' | 'post';
+  /** Extra values sent with every checkout, e.g. { slug, tier }. */
+  fields?: Record<string, string>;
+}
 
 export interface Archetype {
   id: string;

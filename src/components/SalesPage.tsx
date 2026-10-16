@@ -18,7 +18,7 @@
  * Stripe's client_reference_id, and sent with lead capture as
  * custom.referred_by (see src/lib/referral.ts).
  */
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { CTA, OPT_IN } from '@/funnel/config';
 import { SALES } from '@/funnel/sales';
@@ -29,6 +29,7 @@ import type { SalesSection } from '@/lib/types';
 import { Eyebrow } from './LandingPage';
 import { buttonStyle, displayStyle, useTheme } from './ThemeProvider';
 import { SiteHeader, SiteFooter } from './SiteChrome';
+import CheckoutModal, { OpenCheckoutContext, useOpenCheckout } from './CheckoutModal';
 import type { Theme } from '@/themes';
 
 /** Band treatment per section kind: ground / surface / inverted. */
@@ -166,7 +167,8 @@ function CaptureForm({ buttonLabel, inverted }: { buttonLabel: string; inverted?
   );
 }
 
-/** A CTA press: link kinds navigate, lead-capture scrolls to the form. */
+/** A CTA press: link kinds navigate, lead-capture scrolls to the form,
+ *  two-step-checkout opens the email modal. */
 function CtaButton({
   label,
   inverted,
@@ -178,6 +180,7 @@ function CtaButton({
 }) {
   const theme = useTheme();
   const ref = useReferralCode();
+  const openCheckout = useOpenCheckout();
   const style = inverted
     ? inverseButtonStyle(theme)
     : accent
@@ -188,6 +191,21 @@ function CtaButton({
 
   const onClick = () => trackEvent('cta_click', { data: { cta: CTA.kind } });
 
+  if (CTA.kind === 'two-step-checkout') {
+    return (
+      <button
+        type="button"
+        className={className}
+        style={style}
+        onClick={() => {
+          onClick();
+          openCheckout();
+        }}
+      >
+        {label}
+      </button>
+    );
+  }
   if (CTA.kind === 'lead-capture') {
     return (
       <button
@@ -442,6 +460,9 @@ function Section({ section }: { section: SalesSection }) {
 
 export default function SalesPage() {
   const [showBar, setShowBar] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const openCheckout = useCallback(() => setCheckoutOpen(true), []);
+  const closeCheckout = useCallback(() => setCheckoutOpen(false), []);
   const sectionRefs = useRef<Map<string, HTMLElement>>(new Map());
 
   // start on land; view per section as it scrolls in; complete at the
@@ -484,36 +505,42 @@ export default function SalesPage() {
     .map((s) => ({ label: NAV_LABELS[s.kind]!, href: `#${s.kind}` }));
 
   return (
-    <main className="flex-1">
-      <SiteHeader nav={nav} />
-      {SALES.sections.map((section, i) => (
-        <section
-          key={`${section.kind}-${i}`}
-          id={section.kind}
-          data-section={section.kind}
-          data-index={i}
-          ref={(el) => {
-            if (el) sectionRefs.current.set(section.kind, el);
-          }}
-          className={`py-20 md:py-24 ${section.kind === 'hero' ? 'pt-24 md:pt-28' : ''} ${bandClass[BAND[section.kind]]}`}
-        >
-          <Section section={section} />
-        </section>
-      ))}
+    <OpenCheckoutContext.Provider value={openCheckout}>
+      <main className="flex-1">
+        <SiteHeader nav={nav} />
+        {SALES.sections.map((section, i) => (
+          <section
+            key={`${section.kind}-${i}`}
+            id={section.kind}
+            data-section={section.kind}
+            data-index={i}
+            ref={(el) => {
+              if (el) sectionRefs.current.set(section.kind, el);
+            }}
+            className={`py-20 md:py-24 ${section.kind === 'hero' ? 'pt-24 md:pt-28' : ''} ${bandClass[BAND[section.kind]]}`}
+          >
+            <Section section={section} />
+          </section>
+        ))}
 
-      <div className="pb-14" />
-      <SiteFooter note={SALES.footer || undefined} />
+        <div className="pb-14" />
+        <SiteFooter note={SALES.footer || undefined} />
 
-      {SALES.stickyBar && (
-        <div
-          className={`fixed inset-x-0 bottom-0 z-20 flex items-center justify-center gap-5 bg-[var(--ink)] px-5 py-3 text-sm text-[var(--background)] transition-transform duration-300 ${showBar ? 'translate-y-0' : 'translate-y-full'}`}
-        >
-          <span className="hidden sm:inline">{SALES.stickyBar.text}</span>
-          <span className="[&_a]:!px-5 [&_a]:!py-2.5 [&_button]:!px-5 [&_button]:!py-2.5">
-            <CtaButton label={SALES.stickyBar.buttonLabel} inverted />
-          </span>
-        </div>
-      )}
-    </main>
+        {SALES.stickyBar && (
+          <div
+            className={`fixed inset-x-0 bottom-0 z-20 flex items-center justify-center gap-5 bg-[var(--ink)] px-5 py-3 text-sm text-[var(--background)] transition-transform duration-300 ${showBar ? 'translate-y-0' : 'translate-y-full'}`}
+          >
+            <span className="hidden sm:inline">{SALES.stickyBar.text}</span>
+            <span className="[&_a]:!px-5 [&_a]:!py-2.5 [&_button]:!px-5 [&_button]:!py-2.5">
+              <CtaButton label={SALES.stickyBar.buttonLabel} inverted />
+            </span>
+          </div>
+        )}
+
+        {CTA.kind === 'two-step-checkout' && (
+          <CheckoutModal open={checkoutOpen} onClose={closeCheckout} cta={CTA} />
+        )}
+      </main>
+    </OpenCheckoutContext.Provider>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import { CTA } from '@/funnel/config';
 import { ctaHref as buildCtaHref } from '@/lib/referral';
@@ -7,6 +8,7 @@ import { useReferralCode } from '@/lib/useReferralCode';
 import type { QuizResult } from '@/lib/types';
 import { buttonStyle, displayStyle, useTheme } from './ThemeProvider';
 import { SiteHeader, SiteFooter } from './SiteChrome';
+import CheckoutModal from './CheckoutModal';
 
 const roman = ['I.', 'II.', 'III.', 'IV.', 'V.', 'VI.', 'VII.'];
 
@@ -20,6 +22,12 @@ export default function ResultsPage({
   const theme = useTheme();
   const ref = useReferralCode();
   const ctaHref = buildCtaHref(CTA, ref);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const closeCheckout = useCallback(() => setCheckoutOpen(false), []);
+  const handleButton = () => {
+    onCtaClick();
+    if (CTA.kind === 'two-step-checkout') setCheckoutOpen(true);
+  };
 
   const sectionClass =
     theme.sections === 'rule'
@@ -140,7 +148,7 @@ export default function ResultsPage({
             </a>
           ) : (
             <button
-              onClick={onCtaClick}
+              onClick={handleButton}
               className="inline-flex items-center justify-center px-10 py-4.5 transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               style={buttonStyle(theme)}
             >
@@ -149,6 +157,9 @@ export default function ResultsPage({
           )}
           {CTA.note && <p className="mt-4 text-sm text-[var(--muted)]">{CTA.note}</p>}
         </motion.div>
+        {CTA.kind === 'two-step-checkout' && (
+          <CheckoutModal open={checkoutOpen} onClose={closeCheckout} cta={CTA} />
+        )}
       </div>
     </div>
       <SiteFooter />

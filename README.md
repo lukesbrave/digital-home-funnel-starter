@@ -66,8 +66,8 @@ tallies signals, picks the archetype with the highest tally, and
 picks each section's best matching variant. Deterministic: same
 answers, same result, no API keys required.
 
-CTA kinds: `book-call`, `checkout`, `external-link`, or
-`lead-capture`. One CTA per funnel.
+CTA kinds: `book-call`, `checkout`, `external-link`, `lead-capture`,
+or `two-step-checkout` (see below). One CTA per funnel.
 
 ## Wiring your Digital Home (two values)
 
@@ -131,6 +131,34 @@ per code, and pay the attendee their share. The Digital Home shows
 the code on leads and events but does not yet total commissions;
 `NOTES-affiliate.md` lists what the CRM needs for that.
 
+### Two-step checkout
+
+`kind: 'two-step-checkout'` captures the buyer before the payment
+page, so an abandoned checkout is still a lead you can follow up.
+Pressing any CTA opens a small modal (theme tokens, closes on Escape
+or the backdrop) with one email field.
+
+1. The email is captured through the same path as `lead-capture`,
+   tagged `checkout-started`, with `custom.referred_by` when a ref
+   code is in the session. A `cta_click` event fires with
+   `screen_id` and `step` set to `checkout-email`. A CRM outage never
+   blocks the sale: on a network error or a 5xx the visitor still
+   proceeds; only a 4xx keeps the modal open with an inline error.
+2. The visitor goes to checkout:
+   - `method: 'get'` navigates to `checkout.url` with
+     `prefilled_email`, `client_reference_id` (when a ref code
+     exists) and every entry of `fields` as query parameters. This
+     is the Stripe Payment Link shape.
+   - `method: 'post'` submits a hidden HTML form to `checkout.url`
+     with `email`, `ref` (when present) and every entry of `fields`.
+     Your server answers with a 303 redirect to the payment page.
+     Use this when your own site creates the Checkout Session, for
+     example with `fields: { slug, tier }`.
+
+An example lives in `src/funnel/sales.ts` as `SALES_CHECKOUT_CTA`;
+point `CTA` in `config.ts` at it. Optional `modal` copy (headline,
+body, button label) overrides the defaults.
+
 ## AI-enhanced results (optional, later)
 
 `/api/generate-result` is the single result endpoint. Out of the
@@ -186,7 +214,7 @@ must teach something true, with real proof only.
 | --- | --- |
 | `npm run dev` | Local dev server |
 | `npm run build` | Production build and type check |
-| `npm test` | Unit tests (referral helpers) |
+| `npm test` | Unit tests (referral and checkout helpers) |
 | `npm run preview` | Build and preview on the Workers runtime |
 | `npm run deploy` | Build and deploy to Cloudflare |
 

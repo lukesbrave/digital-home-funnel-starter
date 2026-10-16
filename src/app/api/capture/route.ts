@@ -13,7 +13,8 @@
  *
  * Referral: a `ref` on the body lands on the lead as
  * custom.referred_by, so the CRM can attribute the lead to the
- * attendee whose link brought them.
+ * attendee whose link brought them. Extra `tags` (the two-step
+ * checkout sends checkout-started) are appended to the funnel tags.
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { FUNNEL_NAME, FUNNEL_SLUG } from '@/funnel/config';
@@ -28,6 +29,20 @@ interface CaptureBody {
   session_id?: string;
   /** Affiliate referral code from the visitor's `?ref=` link. */
   ref?: string;
+  /** Extra tags, e.g. checkout-started from the two-step checkout. */
+  tags?: string[];
+}
+
+/** Only short, plain tag strings pass; the funnel tags come first. */
+function mergeTags(extra: unknown): string[] {
+  const tags = ['funnel', FUNNEL_SLUG];
+  if (!Array.isArray(extra)) return tags;
+  for (const tag of extra.slice(0, 10)) {
+    if (typeof tag !== 'string') continue;
+    const clean = tag.trim().slice(0, 40);
+    if (/^[A-Za-z0-9_-]+$/.test(clean) && !tags.includes(clean)) tags.push(clean);
+  }
+  return tags;
 }
 
 export async function POST(request: NextRequest) {
@@ -63,7 +78,7 @@ export async function POST(request: NextRequest) {
         source: `funnel:${FUNNEL_SLUG}`,
         form: FUNNEL_NAME,
         page: request.headers.get('referer') || undefined,
-        tags: ['funnel', FUNNEL_SLUG],
+        tags: mergeTags(body.tags),
         custom: {
           funnel: FUNNEL_SLUG,
           archetype: body.archetype || null,
