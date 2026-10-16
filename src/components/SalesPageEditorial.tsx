@@ -262,6 +262,75 @@ function Section({ section }: { section: SalesSection }) {
       );
     }
 
+    case 'credentials': {
+      const tone: Tone = 'cream';
+      return (
+        <div className={`${toneClass[tone]} ${SECTION}`}>
+          <div className={`${WIDE} grid grid-cols-[1.1fr_0.9fr] gap-[8vw] max-[809px]:grid-cols-1 max-[809px]:gap-14`}>
+            <Reveal>
+              {section.kicker && <Label>{section.kicker}</Label>}
+              <Display text={section.headline} emphasis={section.emphasis} className="mt-[clamp(1.75rem,2.6vw,2.5rem)]" />
+              <div className="mt-9 max-w-[620px] space-y-7">
+                {section.body.map((para, i) => (
+                  <p key={i} className={`${T_BODY} ${i === 0 ? '' : muted(tone)}`}>{para}</p>
+                ))}
+              </div>
+            </Reveal>
+            <Reveal>
+              {section.image && (
+                <div className="relative aspect-[1.2] w-full overflow-hidden max-[809px]:aspect-[1.35]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                </div>
+              )}
+              {section.facts && section.facts.length > 0 && (
+                <ul className={`${section.image ? 'mt-10' : ''} border-t ${rule(tone)}`}>
+                  {section.facts.map((f) => (
+                    <li key={f.label} className={`grid grid-cols-[1fr_auto] items-baseline gap-6 border-b ${rule(tone)} py-5`}>
+                      <span className={`${T_META} ${muted(tone)}`}>{f.label}</span>
+                      <span className={T_SUBHEAD} style={display}>{f.value}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Reveal>
+          </div>
+        </div>
+      );
+    }
+
+    case 'scarcity':
+    case 'guarantee':
+    case 'warning': {
+      const tone: Tone = section.kind === 'scarcity' ? 'dark' : section.kind === 'warning' ? 'claret' : 'cream';
+      return (
+        <div className={`${toneClass[tone]} ${SECTION}`}>
+          <div className={`${WIDE} ${BLOCK_GAP}`}>
+            <Reveal>
+              <div className="flex flex-col items-center gap-[clamp(1.75rem,2.6vw,2.5rem)]">
+                {section.kicker && <Label>{section.kicker}</Label>}
+                <Display text={section.headline} emphasis={section.emphasis} center />
+              </div>
+            </Reveal>
+            <Reveal>
+              <div className={`${MEASURE} space-y-7`}>
+                {section.body.map((para, i) => (
+                  <p key={i} className={`${T_BODY} ${i === 0 ? '' : muted(tone)}`}>{para}</p>
+                ))}
+              </div>
+            </Reveal>
+            {section.kind !== 'scarcity' && section.buttonLabel && (
+              <Reveal>
+                <div className="flex justify-center">
+                  <Cta label={section.buttonLabel} variant={tone === 'claret' ? 'cream' : 'solid'} />
+                </div>
+              </Reveal>
+            )}
+          </div>
+        </div>
+      );
+    }
+
     case 'offer': {
       const tone: Tone = 'claret';
       return (
@@ -446,6 +515,7 @@ function Section({ section }: { section: SalesSection }) {
 
 const NAV_LABELS: Partial<Record<SalesSection['kind'], string>> = {
   story: 'The sessions',
+  credentials: 'Paul',
   offer: 'Inside',
   'value-stack': 'Included',
   proof: 'Stories',

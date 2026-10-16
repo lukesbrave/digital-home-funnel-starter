@@ -81,9 +81,11 @@ stack. `src/funnel/samples/bali-recordings.ts` is a complete editorial
 example.
 
 Sales-page sections (`sales.ts`, in order): `hero`, `problem`, `story`,
-`offer`, `value-stack` (every piece inside the offer, numbered, each
-with an optional worth and a total line the price then undercuts),
-`proof` (real quotes only), `pricing`, `faq`, `final-cta`. Every
+`credentials` (step 4), `offer`, `value-stack` (every piece inside the
+offer, numbered, each with an optional worth and a total line the price
+then undercuts), `proof` (real quotes only), `scarcity` (step 8, real
+reasons only), `guarantee` (step 9), `pricing`, `warning` (step 11),
+`faq`, `final-cta`. One block per step of the 12-step letter. Every
 block is optional except hero and final-cta; the page renders what
 exists, in order, and each becomes a step in the scroll-depth funnel.
 

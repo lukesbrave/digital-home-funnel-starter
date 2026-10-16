@@ -8,11 +8,11 @@ import { SALES_BALI_RECORDINGS as SALES } from '../src/funnel/samples/bali-recor
 
 const text = JSON.stringify(SALES);
 
-test('editorial layout with the twelve-step spine in order', () => {
+test('editorial layout with one block per step of the twelve, in order', () => {
   assert.equal(SALES.layout, 'editorial');
   assert.deepEqual(
     SALES.sections.map((s) => s.kind),
-    ['hero', 'problem', 'story', 'offer', 'value-stack', 'proof', 'pricing', 'faq', 'final-cta']
+    ['hero', 'problem', 'story', 'credentials', 'offer', 'proof', 'value-stack', 'scarcity', 'guarantee', 'pricing', 'warning', 'faq', 'final-cta']
   );
 });
 

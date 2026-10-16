@@ -148,6 +148,9 @@ export type SalesSection =
       image?: SalesImage }
   | { kind: 'story'; kicker?: string; headline: string; emphasis?: string; body?: string;
       steps: { title: string; body: string }[]; image?: SalesImage }
+  /** Step 4: who is behind this and why believe them. Facts are real or absent. */
+  | { kind: 'credentials'; kicker?: string; headline: string; emphasis?: string; body: string[];
+      facts?: { label: string; value: string }[]; image?: SalesImage }
   | { kind: 'offer'; kicker?: string; headline: string; emphasis?: string; body?: string;
       buttonLabel?: string; items: { label: string; tag?: string }[]; image?: SalesImage }
   /** The value stack: every piece inside the offer, numbered, each
@@ -163,6 +166,14 @@ export type SalesSection =
       cardLabel?: string;
       /** Currency mark beside the price (editorial), e.g. "USD". */
       currencyLabel?: string }
+  /** Step 8: why now. Real reasons only; never a deadline that is not real. */
+  | { kind: 'scarcity'; kicker?: string; headline: string; emphasis?: string; body: string[] }
+  /** Step 9: the risk reversal, in the seller's own words. */
+  | { kind: 'guarantee'; kicker?: string; headline: string; emphasis?: string; body: string[];
+      buttonLabel?: string }
+  /** Step 11: what happens if they do nothing. Sits after the CTA. */
+  | { kind: 'warning'; kicker?: string; headline: string; emphasis?: string; body: string[];
+      buttonLabel?: string }
   | { kind: 'faq'; kicker?: string; headline: string; emphasis?: string;
       items: { q: string; a: string }[] }
   | { kind: 'final-cta'; headline: string; emphasis?: string; body?: string; buttonLabel: string;

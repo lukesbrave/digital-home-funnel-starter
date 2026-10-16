@@ -38,10 +38,14 @@ const BAND: Record<SalesSection['kind'], 'ground' | 'surface' | 'inverted'> = {
   hero: 'ground',
   problem: 'surface',
   story: 'ground',
+  credentials: 'surface',
   offer: 'inverted',
   'value-stack': 'surface',
   proof: 'ground',
   pricing: 'surface',
+  scarcity: 'ground',
+  guarantee: 'surface',
+  warning: 'inverted',
   faq: 'ground',
   'final-cta': 'ground',
 };
@@ -281,6 +285,41 @@ function Section({ section }: { section: SalesSection }) {
             </motion.div>
           )}
         </div>
+      );
+
+    case 'credentials':
+    case 'scarcity':
+    case 'guarantee':
+    case 'warning':
+      return (
+        <Rise className="mx-auto w-full max-w-3xl px-6">
+          {section.kicker && <Kicker inverted={inverted}>{section.kicker}</Kicker>}
+          <h2 className="mt-5 max-w-[20ch] text-[clamp(28px,4vw,42px)]" style={displayStyle(theme)}>
+            {section.headline}
+          </h2>
+          <div className="mt-7 space-y-5 text-lg leading-relaxed">
+            {section.body.map((para, i) => (
+              <p key={i} className={i === 0 ? '' : mutedClass} style={i === 0 ? undefined : mutedStyle}>
+                {para}
+              </p>
+            ))}
+          </div>
+          {section.kind === 'credentials' && section.facts && section.facts.length > 0 && (
+            <ul className={`mt-8 border border-[var(--border)] bg-[var(--surface)] p-6 text-[var(--ink)] ${radius}`}>
+              {section.facts.map((f) => (
+                <li key={f.label} className="flex items-center justify-between gap-4 border-b border-[var(--border)] py-3 text-[15px] last:border-0">
+                  <span className="text-[var(--muted)]">{f.label}</span>
+                  <span className="font-semibold">{f.value}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {(section.kind === 'guarantee' || section.kind === 'warning') && section.buttonLabel && (
+            <div className="mt-8">
+              <CtaButton label={section.buttonLabel} inverted={inverted} accent={!inverted} />
+            </div>
+          )}
+        </Rise>
       );
 
     case 'problem':
