@@ -20,7 +20,7 @@ import { SALES } from '@/funnel/sales';
 import { trackEvent, rememberReferralCode } from '@/lib/events';
 import { ctaHref } from '@/lib/referral';
 import { useReferralCode } from '@/lib/useReferralCode';
-import type { SalesImage, SalesSection } from '@/lib/types';
+import type { SalesSection } from '@/lib/types';
 import CheckoutModal, { OpenCheckoutContext, useOpenCheckout } from './CheckoutModal';
 
 /* The event page's type scale and rhythm, verbatim. */
@@ -28,7 +28,6 @@ const SECTION = 'px-7 py-[clamp(4.5rem,9vw,8rem)] max-[809px]:px-5';
 const BLOCK_GAP = 'space-y-[clamp(3rem,5.5vw,5.5rem)]';
 /* Section headlines take the hero's sentence scale, never display size. */
 const T_DISPLAY = 'text-[clamp(1.9rem,3vw,3rem)] leading-[1.12] tracking-[-0.03em]';
-const T_SUBHEAD = 'text-[clamp(1.35rem,1.9vw,1.8rem)] leading-[1.1] tracking-[-0.02em]';
 const T_BODY_SM = 'text-[clamp(0.95rem,1.1vw,1.03rem)] leading-[1.8]';
 const T_META = 'text-[10px] uppercase tracking-[0.2em]';
 const WIDE = 'mx-auto max-w-[1380px]';
@@ -326,20 +325,12 @@ function Column({ kicker, headline, emphasis, paragraphs, buttonLabel, tone, chi
   );
 }
 
-function Rows({ items, tone, numerals = true }: { items: { title: string; body?: string; aside?: string }[]; tone: Tone; numerals?: boolean }) {
+/** A pull quote in the column: the line the reader is meant to stop on. */
+function PullLine({ children }: { children: React.ReactNode }) {
   return (
-    <ol className={`border-t ${rule(tone)}`}>
-      {items.map((item, i) => (
-        <li key={item.title} className={`grid grid-cols-[44px_1fr_auto] items-start gap-5 border-b ${rule(tone)} py-6`}>
-          <span className={`pt-1 ${T_META} ${muted(tone)}`}>{numerals ? String(i + 1).padStart(2, '0') : '·'}</span>
-          <div>
-            <p className={T_SUBHEAD} style={display}>{item.title}</p>
-            {item.body && <p className={`mt-3 max-w-[56ch] ${T_BODY_SM} ${muted(tone)}`}>{item.body}</p>}
-          </div>
-          {item.aside && <span className={`whitespace-nowrap pt-1 ${T_META} ${muted(tone)}`}>{item.aside}</span>}
-        </li>
-      ))}
-    </ol>
+    <p className="mx-auto max-w-[640px] text-center text-[clamp(1.4rem,2.2vw,2rem)] italic leading-[1.3] tracking-[-0.02em]" style={display}>
+      {children}
+    </p>
   );
 }
 
@@ -348,144 +339,195 @@ function Section({ section }: { section: SalesSection }) {
     case 'hero':
       return <Hero section={section} />;
 
-    /* Text column beside a photograph, the hero's own shape. */
+    /* 2. The manifesto: one reading column, the headline, the prose, the
+       third paragraph lifted as a pull line, then a full-width photograph
+       with the black caption panel. */
     case 'problem': {
       const tone: Tone = 'cream';
+      const [first, second, third, ...rest] = section.body;
       return (
-        <div className={`${toneClass[tone]} grid grid-cols-[0.55fr_0.45fr] max-[809px]:grid-cols-1`}>
-          <div className={`flex items-center justify-center ${SECTION}`}>
-            <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body} tone={tone} />
+        <div className={`bg-[var(--background)] text-[var(--ink)] ${SECTION}`}>
+          <div className={`${WIDE} ${BLOCK_GAP}`}>
+            <Reveal>
+              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={[first, second].filter(Boolean)} tone={tone} />
+            </Reveal>
+            {third && (
+              <Reveal>
+                <PullLine>{third}</PullLine>
+              </Reveal>
+            )}
+            {rest.length > 0 && (
+              <Reveal>
+                <div className="mx-auto max-w-[520px] space-y-5">
+                  {rest.map((para, i) => (
+                    <p key={i} className={`${T_BODY_SM} ${i === 0 ? 'opacity-85' : muted(tone)}`}>{para}</p>
+                  ))}
+                </div>
+              </Reveal>
+            )}
+            {section.image && (
+              <Reveal>
+                <div className="relative aspect-[2.1] w-full overflow-hidden max-[809px]:aspect-[1.2]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                  {section.image.caption && (
+                    <BlackPanel className="absolute bottom-0 right-0 h-[110px] w-[240px]">
+                      <span className="absolute inset-x-5 bottom-4 block text-[9px] leading-[1.6] opacity-80">{section.image.caption}</span>
+                    </BlackPanel>
+                  )}
+                </div>
+              </Reveal>
+            )}
           </div>
-          {section.image && (
-            <div className="relative min-h-[60vh] max-[809px]:min-h-[55vh]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-              {section.image.caption && (
-                <BlackPanel className="absolute bottom-0 left-0 h-[110px] w-[230px]">
-                  <span className="absolute inset-x-5 bottom-4 block text-[9px] leading-[1.6] opacity-80">{section.image.caption}</span>
-                </BlackPanel>
-              )}
-            </div>
-          )}
         </div>
       );
     }
 
+    /* 3. The modules: a photograph that stays put while the numbered steps
+       scroll past it as tall panels. */
     case 'story': {
       const tone: Tone = 'dark';
       return (
-        <div className={`${toneClass[tone]} grid grid-cols-[0.45fr_0.55fr] max-[809px]:grid-cols-1`}>
-          {section.image && (
-            <div className="relative min-h-[60vh] max-[809px]:order-2 max-[809px]:min-h-[50vh]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-            </div>
-          )}
-          <div className={`flex items-center justify-center ${SECTION}`}>
-            <div className="w-full max-w-[600px]">
-              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body ? [section.body] : undefined} tone={tone} />
-              <div className="mt-12">
-                <Rows items={section.steps.map((st) => ({ title: st.title, body: st.body }))} tone={tone} />
+        <div className={`${toneClass[tone]} grid grid-cols-[0.42fr_0.58fr] max-[809px]:grid-cols-1`}>
+          <div className="relative max-[809px]:min-h-[50vh]">
+            <div className="sticky top-0 h-screen max-[809px]:relative max-[809px]:h-[50vh]">
+              {section.image && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              )}
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,24,20,.15),rgba(23,24,20,.85))]" />
+              <div className="absolute inset-x-8 bottom-10 max-[809px]:inset-x-5 max-[809px]:bottom-6">
+                {section.kicker && <p className="text-[10px] font-medium uppercase tracking-[0.26em] opacity-70">{section.kicker}</p>}
+                <h2 className={`mt-5 max-w-[420px] text-balance ${T_DISPLAY}`} style={display}>
+                  <Emphasis text={section.headline} emphasis={section.emphasis} />
+                </h2>
               </div>
             </div>
           </div>
+          <div className={`border-l ${rule(tone)} max-[809px]:border-l-0`}>
+            {section.body && (
+              <div className={`border-b ${rule(tone)} px-10 py-14 max-[809px]:px-5 max-[809px]:py-10`}>
+                <p className={`max-w-[520px] ${T_BODY_SM} opacity-85`}>{section.body}</p>
+              </div>
+            )}
+            {section.steps.map((st, i) => (
+              <Reveal key={st.title} className={`flex min-h-[52vh] flex-col justify-between border-b ${rule(tone)} px-10 py-12 max-[809px]:min-h-0 max-[809px]:px-5 max-[809px]:py-10`}>
+                <div className="flex items-baseline justify-between">
+                  <span className={`${T_META} opacity-60`}>{String(i + 1).padStart(2, '0')} / {String(section.steps.length).padStart(2, '0')}</span>
+                </div>
+                <div className="mt-16 max-w-[520px] max-[809px]:mt-10">
+                  <h3 className="text-[clamp(1.5rem,2.3vw,2.2rem)] leading-[1.1] tracking-[-0.025em]" style={display}>{st.title}</h3>
+                  <p className={`mt-5 ${T_BODY_SM} opacity-70`}>{st.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       );
     }
 
+    /* 4. The profile: a square portrait with the black caption panel, the
+       words beside it, and a strip of facts across the bottom. */
     case 'credentials': {
       const tone: Tone = 'cream';
       return (
-        <div className={`${toneClass[tone]} grid grid-cols-[0.45fr_0.55fr] max-[809px]:grid-cols-1`}>
-          {section.image && (
-            <div className="relative min-h-[60vh] max-[809px]:min-h-[55vh]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+        <div className={`${toneClass[tone]} ${SECTION}`}>
+          <div className={WIDE}>
+            <div className="grid grid-cols-[0.4fr_0.6fr] items-center gap-[6vw] max-[809px]:grid-cols-1 max-[809px]:gap-10">
+              {section.image && (
+                <Reveal>
+                  <div className="relative aspect-square w-full overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                    <BlackPanel className="absolute bottom-0 left-0 h-[96px] w-[200px]">
+                      <span className="absolute inset-x-5 bottom-4 block text-[9px] uppercase tracking-[0.16em] opacity-80">{section.image.alt}</span>
+                    </BlackPanel>
+                  </div>
+                </Reveal>
+              )}
+              <Reveal>
+                {section.kicker && <p className="mb-6 text-[10px] font-medium uppercase tracking-[0.26em] opacity-70">{section.kicker}</p>}
+                <Display text={section.headline} emphasis={section.emphasis} />
+                <div className="mt-7 max-w-[560px] space-y-5">
+                  {section.body.map((para, i) => (
+                    <p key={i} className={`${T_BODY_SM} ${i === 0 ? 'opacity-85' : muted(tone)}`}>{para}</p>
+                  ))}
+                </div>
+              </Reveal>
             </div>
-          )}
-          <div className={`flex items-center justify-center ${SECTION}`}>
-            <div className="w-full max-w-[560px]">
-              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body} tone={tone} />
-              {section.facts && section.facts.length > 0 && (
-                <ul className={`mt-10 border-t ${rule(tone)}`}>
+            {section.facts && section.facts.length > 0 && (
+              <Reveal>
+                <ul className={`mt-16 grid grid-cols-4 border-t ${rule(tone)} max-[809px]:grid-cols-2`}>
                   {section.facts.map((f) => (
-                    <li key={f.label} className={`grid grid-cols-[1fr_auto] items-baseline gap-6 border-b ${rule(tone)} py-4`}>
-                      <span className={`${T_META} ${muted(tone)}`}>{f.label}</span>
-                      <span className="text-[clamp(1.2rem,1.6vw,1.5rem)]" style={display}>{f.value}</span>
+                    <li key={f.label} className={`border-b ${rule(tone)} py-7 pr-6`}>
+                      <p className="text-[clamp(1.8rem,2.6vw,2.6rem)] leading-none" style={display}>{f.value}</p>
+                      <p className={`mt-3 ${T_META} ${muted(tone)}`}>{f.label}</p>
                     </li>
                   ))}
                 </ul>
-              )}
-            </div>
+              </Reveal>
+            )}
           </div>
         </div>
       );
     }
 
+    /* 5. What you get: a dark band, the words centred, the items as a grid
+       of bordered cells with numerals. */
     case 'offer': {
-      const tone: Tone = 'cream';
-      return (
-        <div className={`bg-[var(--background)] text-[var(--ink)] ${SECTION}`}>
-          <div className={`${WIDE} grid grid-cols-[0.5fr_0.5fr] items-center gap-[7vw] max-[809px]:grid-cols-1 max-[809px]:gap-12`}>
-            <Reveal>
-              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body ? [section.body] : undefined} buttonLabel={section.buttonLabel} tone={tone} />
-            </Reveal>
-            <Reveal>
-              <ul className={`border-t ${rule(tone)}`}>
-                {section.items.map((item, i) => (
-                  <li key={item.label} className={`grid grid-cols-[40px_1fr_auto] items-start gap-4 border-b ${rule(tone)} py-5 ${T_BODY_SM}`}>
-                    <span className={`pt-0.5 ${T_META} ${muted(tone)}`}>{String(i + 1).padStart(2, '0')}</span>
-                    <span>{item.label}</span>
-                    {item.tag && <span className={`whitespace-nowrap pt-0.5 ${T_META} ${muted(tone)}`}>{item.tag}</span>}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          </div>
-        </div>
-      );
-    }
-
-    case 'value-stack': {
-      const tone: Tone = 'cream';
-      return (
-        <div className={`${toneClass[tone]} ${SECTION}`}>
-          <div className={`${WIDE} grid grid-cols-[0.45fr_0.55fr] items-start gap-[7vw] max-[809px]:grid-cols-1 max-[809px]:gap-12`}>
-            <Reveal className="md:sticky md:top-24">
-              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body ? [section.body] : undefined} buttonLabel={section.buttonLabel} tone={tone} />
-            </Reveal>
-            <Reveal>
-              <Rows items={section.items.map((it) => ({ title: it.label, body: it.detail, aside: it.value }))} tone={tone} />
-              {section.total && (
-                <BlackPanel className="mt-8 flex min-h-[150px] items-end justify-between gap-6 p-6 pt-14">
-                  <span className={`${T_META} opacity-70`}>{section.total.label}</span>
-                  <span className="text-[clamp(2rem,3.2vw,3.2rem)] leading-none" style={display}>{section.total.value}</span>
-                </BlackPanel>
-              )}
-            </Reveal>
-          </div>
-        </div>
-      );
-    }
-
-    case 'proof': {
       const tone: Tone = 'dark';
       return (
         <div className={`${toneClass[tone]} ${SECTION}`}>
           <div className={`${WIDE} ${BLOCK_GAP}`}>
             <Reveal>
-              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} tone={tone} />
+              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body ? [section.body] : undefined} tone={tone} />
             </Reveal>
-            <div className="mx-auto grid max-w-[1100px] grid-cols-2 gap-10 max-[809px]:grid-cols-1">
+            <Reveal>
+              <ul className={`mx-auto grid max-w-[1100px] grid-cols-2 border-l border-t ${rule(tone)} max-[809px]:grid-cols-1`}>
+                {section.items.map((item, i) => (
+                  <li key={item.label} className={`flex min-h-[200px] flex-col justify-between border-b border-r ${rule(tone)} p-7`}>
+                    <div className="flex items-baseline justify-between">
+                      <span className={`${T_META} opacity-55`}>{String(i + 1).padStart(2, '0')}</span>
+                      {item.tag && <span className={`${T_META} opacity-55`}>{item.tag}</span>}
+                    </div>
+                    <p className="mt-10 max-w-[30ch] text-[clamp(1.1rem,1.5vw,1.4rem)] leading-[1.25] tracking-[-0.015em]" style={display}>{item.label}</p>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+            {section.buttonLabel && (
+              <Reveal>
+                <div className="flex justify-center">
+                  <Cta label={section.buttonLabel} variant="cream" />
+                </div>
+              </Reveal>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    /* 6. Stories: large italic quotes on cream, one above the other, each
+       with a hairline and its name set small. */
+    case 'proof': {
+      const tone: Tone = 'cream';
+      return (
+        <div className={`bg-[var(--background)] text-[var(--ink)] ${SECTION}`}>
+          <div className={`${WIDE} grid grid-cols-[0.3fr_0.7fr] gap-[6vw] max-[809px]:grid-cols-1 max-[809px]:gap-10`}>
+            <div>
+              {section.kicker && <p className="mb-6 text-[10px] font-medium uppercase tracking-[0.26em] opacity-70">{section.kicker}</p>}
+              <Display text={section.headline} emphasis={section.emphasis} />
+            </div>
+            <div>
               {section.quotes.map((q) => (
                 <Reveal key={q.who}>
-                  <figure className={`flex h-full flex-col justify-between border-t ${rule(tone)} pt-7`}>
-                    <blockquote className="text-[clamp(1.25rem,1.8vw,1.7rem)] italic leading-[1.3] tracking-[-0.015em]" style={display}>
+                  <figure className={`border-t ${rule(tone)} py-10`}>
+                    <blockquote className="max-w-[760px] text-[clamp(1.35rem,2vw,1.9rem)] italic leading-[1.3] tracking-[-0.015em]" style={display}>
                       “{q.quote}”
                     </blockquote>
-                    <figcaption className="mt-8">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.16em]">{q.who}</p>
-                      {q.role && <p className="mt-2 text-[9px] uppercase tracking-[0.16em] opacity-50">{q.role}</p>}
+                    <figcaption className="mt-7 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.16em]">{q.who}</span>
+                      {q.role && <span className={`${T_META} ${muted(tone)}`}>{q.role}</span>}
                     </figcaption>
                   </figure>
                 </Reveal>
@@ -496,29 +538,106 @@ function Section({ section }: { section: SalesSection }) {
       );
     }
 
-    case 'scarcity':
-    case 'guarantee':
-    case 'warning': {
-      const tone: Tone = section.kind === 'warning' ? 'dark' : 'cream';
+    /* 7. The programme: the seminars as a full-width table, grouped by day,
+       the anchor as a black strip across the bottom, the button after. */
+    case 'value-stack': {
+      const tone: Tone = 'cream';
+      const rows = section.items.map((it, i) => ({ ...it, showGroup: Boolean(it.group) && it.group !== section.items[i - 1]?.group }));
       return (
-        <div className={`${section.kind === 'guarantee' ? 'bg-[var(--background)] text-[var(--ink)]' : toneClass[tone]} ${SECTION}`}>
-          <div className={WIDE}>
+        <div className={`${toneClass[tone]} ${SECTION}`}>
+          <div className={`${WIDE} ${BLOCK_GAP}`}>
             <Reveal>
-              <Column
-                kicker={section.kicker}
-                headline={section.headline}
-                emphasis={section.emphasis}
-                paragraphs={section.body}
-                buttonLabel={section.kind === 'scarcity' ? undefined : section.buttonLabel}
-                tone={tone}
-              />
+              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body ? [section.body] : undefined} tone={tone} />
+            </Reveal>
+            <Reveal>
+              <ol className={`mx-auto max-w-[1100px] border-t ${rule(tone)}`}>
+                {rows.map((it, i) => {
+                  return (
+                    <li key={it.label}>
+                      {it.showGroup && (
+                        <p className={`border-b ${rule(tone)} pb-3 pt-10 ${T_META} ${muted(tone)} first:pt-0`}>{it.group}</p>
+                      )}
+                      <div className={`grid grid-cols-[56px_1fr_1fr_auto] items-baseline gap-6 border-b ${rule(tone)} py-5 max-[809px]:grid-cols-[40px_1fr_auto]`}>
+                        <span className={`${T_META} ${muted(tone)}`}>{String(i + 1).padStart(2, '0')}</span>
+                        <span className="text-[clamp(1.1rem,1.5vw,1.4rem)] leading-[1.2] tracking-[-0.015em]" style={display}>{it.label}</span>
+                        {it.detail && <span className={`${T_BODY_SM} ${muted(tone)} max-[809px]:col-span-3 max-[809px]:col-start-2`}>{it.detail}</span>}
+                        {it.value && <span className={`${T_META} ${muted(tone)}`}>{it.value}</span>}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
+              {section.total && (
+                <BlackPanel className="mx-auto mt-8 flex max-w-[1100px] items-end justify-between gap-6 p-7 pt-16">
+                  <span className={`${T_META} opacity-70`}>{section.total.label}</span>
+                  <span className="text-[clamp(2.2rem,3.6vw,3.6rem)] leading-none" style={display}>{section.total.value}</span>
+                </BlackPanel>
+              )}
+            </Reveal>
+            {section.buttonLabel && (
+              <Reveal>
+                <div className="flex justify-center">
+                  <Cta label={section.buttonLabel} variant="solid" />
+                </div>
+              </Reveal>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    /* 8. Why now: a photograph band with the words over it. */
+    case 'scarcity': {
+      return (
+        <div className={`relative overflow-hidden bg-[#151713] text-[#f2eee7] ${SECTION}`}>
+          {section.image && (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,7,.7),rgba(8,9,7,.55)_50%,rgba(8,9,7,.8))]" />
+            </>
+          )}
+          <div className={`relative ${WIDE}`}>
+            <Reveal>
+              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} paragraphs={section.body} tone="dark" />
             </Reveal>
           </div>
         </div>
       );
     }
 
-    /* The price card is the hero's black panel. */
+    /* 9. The guarantee: three pillars across, numbered, with the button. */
+    case 'guarantee': {
+      const tone: Tone = 'cream';
+      return (
+        <div className={`bg-[var(--background)] text-[var(--ink)] ${SECTION}`}>
+          <div className={`${WIDE} ${BLOCK_GAP}`}>
+            <Reveal>
+              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} tone={tone} />
+            </Reveal>
+            <Reveal>
+              <ol className={`mx-auto grid max-w-[1100px] grid-cols-3 gap-8 border-t ${rule(tone)} pt-8 max-[809px]:grid-cols-1`}>
+                {section.body.map((para, i) => (
+                  <li key={i}>
+                    <span className={`${T_META} ${muted(tone)}`}>{String(i + 1).padStart(2, '0')}</span>
+                    <p className={`mt-4 ${T_BODY_SM} opacity-85`}>{para}</p>
+                  </li>
+                ))}
+              </ol>
+            </Reveal>
+            {section.buttonLabel && (
+              <Reveal>
+                <div className="flex justify-center">
+                  <Cta label={section.buttonLabel} variant="solid" />
+                </div>
+              </Reveal>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    /* 10. The price: the words beside the hero's black panel. */
     case 'pricing': {
       const tone: Tone = 'cream';
       return (
@@ -543,6 +662,39 @@ function Section({ section }: { section: SalesSection }) {
                 {section.guarantee && <p className="mt-6 text-[10px] leading-[1.7] opacity-60">{section.guarantee}</p>}
               </BlackPanel>
             </Reveal>
+          </div>
+        </div>
+      );
+    }
+
+    /* 11. The warning: dark, the first paragraph set as the pull line. */
+    case 'warning': {
+      const [first, ...rest] = section.body;
+      return (
+        <div className={`${toneClass.dark} ${SECTION}`}>
+          <div className={`${WIDE} ${BLOCK_GAP}`}>
+            <Reveal>
+              <Column kicker={section.kicker} headline={section.headline} emphasis={section.emphasis} tone="dark" />
+            </Reveal>
+            {first && (
+              <Reveal>
+                <PullLine>{first}</PullLine>
+              </Reveal>
+            )}
+            <Reveal>
+              <div className="mx-auto max-w-[520px] space-y-5">
+                {rest.map((para, i) => (
+                  <p key={i} className={`${T_BODY_SM} ${i === 0 ? 'opacity-85' : 'opacity-65'}`}>{para}</p>
+                ))}
+              </div>
+            </Reveal>
+            {section.buttonLabel && (
+              <Reveal>
+                <div className="flex justify-center">
+                  <Cta label={section.buttonLabel} variant="cream" />
+                </div>
+              </Reveal>
+            )}
           </div>
         </div>
       );
@@ -575,7 +727,7 @@ function Section({ section }: { section: SalesSection }) {
       );
     }
 
-    /* The closing is the hero mirrored: photograph, then the column with the button. */
+    /* 13. The closing mirrors the hero: photograph, then the column with the button. */
     case 'final-cta':
       return (
         <div className="grid grid-cols-[0.55fr_0.45fr] max-[809px]:grid-cols-1">

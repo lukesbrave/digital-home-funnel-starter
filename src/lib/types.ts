@@ -173,7 +173,8 @@ export type SalesSection =
   /** The value stack: every piece inside the offer, numbered, each
    *  with an optional worth, and a total line the price then undercuts. */
   | { kind: 'value-stack'; kicker?: string; headline: string; emphasis?: string; body?: string;
-      items: { label: string; detail?: string; value?: string }[];
+      /** `group` starts a new labelled run of rows (a day, a module). */
+      items: { label: string; detail?: string; value?: string; group?: string }[];
       total?: { label: string; value: string }; buttonLabel?: string }
   | { kind: 'proof'; kicker?: string; headline: string; emphasis?: string;
       quotes: { quote: string; who: string; role?: string }[] }
@@ -184,7 +185,9 @@ export type SalesSection =
       /** Currency mark beside the price (editorial), e.g. "USD". */
       currencyLabel?: string }
   /** Step 8: why now. Real reasons only; never a deadline that is not real. */
-  | { kind: 'scarcity'; kicker?: string; headline: string; emphasis?: string; body: string[] }
+  | { kind: 'scarcity'; kicker?: string; headline: string; emphasis?: string; body: string[];
+      /** A photograph behind the words (editorial renders it as a full-bleed band). */
+      image?: SalesImage }
   /** Step 9: the risk reversal, in the seller's own words. */
   | { kind: 'guarantee'; kicker?: string; headline: string; emphasis?: string; body: string[];
       buttonLabel?: string }
