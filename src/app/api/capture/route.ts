@@ -10,9 +10,14 @@
  * crm_capture_key and crm_funnel_secret settings hold the same
  * value (the recommended setup). If they differ, set
  * FUNNEL_CAPTURE_KEY to the capture key.
+ *
+ * Referral: a `ref` on the body lands on the lead as
+ * custom.referred_by, so the CRM can attribute the lead to the
+ * attendee whose link brought them.
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { FUNNEL_NAME, FUNNEL_SLUG } from '@/funnel/config';
+import { normalizeRefCode } from '@/lib/referral';
 
 interface CaptureBody {
   email?: string;
@@ -21,6 +26,8 @@ interface CaptureBody {
   archetype?: string;
   answers?: Record<string, unknown>;
   session_id?: string;
+  /** Affiliate referral code from the visitor's `?ref=` link. */
+  ref?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -62,6 +69,7 @@ export async function POST(request: NextRequest) {
           archetype: body.archetype || null,
           quiz_answers: body.answers || {},
           funnel_session_id: body.session_id || null,
+          referred_by: normalizeRefCode(body.ref) ?? null,
         },
       }),
     });

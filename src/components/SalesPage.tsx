@@ -12,12 +12,19 @@
  *   view      -> a section first became visible (screen_id = kind)
  *   complete  -> the final-cta section reached
  *   cta_click -> any CTA pressed
+ *
+ * Referral: `?ref=<code>` on the landing URL is remembered for the
+ * session, sent on every beacon, appended to a checkout CTA as
+ * Stripe's client_reference_id, and sent with lead capture as
+ * custom.referred_by (see src/lib/referral.ts).
  */
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { CTA, OPT_IN } from '@/funnel/config';
 import { SALES } from '@/funnel/sales';
-import { trackEvent, getFunnelSessionId } from '@/lib/events';
+import { trackEvent, getFunnelSessionId, getReferralCode, rememberReferralCode } from '@/lib/events';
+import { ctaHref } from '@/lib/referral';
+import { useReferralCode } from '@/lib/useReferralCode';
 import type { SalesSection } from '@/lib/types';
 import { Eyebrow } from './LandingPage';
 import { buttonStyle, displayStyle, useTheme } from './ThemeProvider';
@@ -101,6 +108,7 @@ function CaptureForm({ buttonLabel, inverted }: { buttonLabel: string; inverted?
           email,
           name: name || undefined,
           session_id: getFunnelSessionId(),
+          ref: getReferralCode(),
         }),
         keepalive: true,
       });
@@ -169,6 +177,7 @@ function CtaButton({
   accent?: boolean;
 }) {
   const theme = useTheme();
+  const ref = useReferralCode();
   const style = inverted
     ? inverseButtonStyle(theme)
     : accent
@@ -195,7 +204,7 @@ function CtaButton({
     );
   }
   return (
-    <a href={CTA.url} onClick={onClick} className={className} style={style}>
+    <a href={ctaHref(CTA, ref)} onClick={onClick} className={className} style={style}>
       {label}
     </a>
   );
@@ -438,6 +447,7 @@ export default function SalesPage() {
   // start on land; view per section as it scrolls in; complete at the
   // final CTA. trackEvent dedupes, so observers can fire repeatedly.
   useEffect(() => {
+    rememberReferralCode();
     trackEvent('start');
     const observer = new IntersectionObserver(
       (entries) => {

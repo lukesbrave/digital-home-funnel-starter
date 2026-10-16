@@ -8,7 +8,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import ResultsPage from '@/components/ResultsPage';
 import { getVisibleQuestions } from '@/funnel/questions';
 import { OPT_IN } from '@/funnel/config';
-import { trackEvent, getFunnelSessionId } from '@/lib/events';
+import { trackEvent, getFunnelSessionId, getReferralCode, rememberReferralCode } from '@/lib/events';
 import type { Answers, AppStep, QuizResult } from '@/lib/types';
 
 /**
@@ -31,6 +31,11 @@ export default function QuizFunnel() {
 
   const visibleQuestions = getVisibleQuestions(answers);
   const currentQuestion = visibleQuestions[questionIndex];
+
+  // Remember an attendee's `?ref=` on land, before any beacon fires.
+  useEffect(() => {
+    rememberReferralCode();
+  }, []);
 
   const handleStart = () => {
     trackEvent('start');
@@ -86,6 +91,7 @@ export default function QuizFunnel() {
               archetype: computed.archetype.id,
               answers,
               session_id: getFunnelSessionId(),
+              ref: getReferralCode(),
             }),
             keepalive: true,
           }).catch(() => {});

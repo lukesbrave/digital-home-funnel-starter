@@ -2,6 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { CTA } from '@/funnel/config';
+import { ctaHref as buildCtaHref } from '@/lib/referral';
+import { useReferralCode } from '@/lib/useReferralCode';
 import type { QuizResult } from '@/lib/types';
 import { buttonStyle, displayStyle, useTheme } from './ThemeProvider';
 import { SiteHeader, SiteFooter } from './SiteChrome';
@@ -16,7 +18,8 @@ export default function ResultsPage({
   onCtaClick: () => void;
 }) {
   const theme = useTheme();
-  const ctaHref = 'url' in CTA ? CTA.url : undefined;
+  const ref = useReferralCode();
+  const ctaHref = buildCtaHref(CTA, ref);
 
   const sectionClass =
     theme.sections === 'rule'

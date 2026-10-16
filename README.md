@@ -95,6 +95,41 @@ What flows into your Digital Home:
   starts, opt-in rate, CTA rate, and per-step drop-off.
 - Every opt-in lands in your leads table with the quiz answers and
   archetype attached under `custom`, tagged with the funnel slug.
+- A visitor who arrived on an affiliate link (`?ref=<code>`) carries
+  the code on every event and lead (see Affiliate links below).
+
+## Affiliate links
+
+Every event attendee (or any partner) can get a personal link that
+credits them for the sales and leads they send. No backend change is
+needed; the page does the work.
+
+Handing out links: take the funnel's URL and add `?ref=<code>`, one
+code per person, for example
+`https://offer.yourdomain.com/?ref=sam-k`. Codes are letters, digits,
+hyphens and underscores, up to 64 characters. `utm_*` parameters can
+sit beside it as before.
+
+What happens on the page:
+
+- The code is read on land and remembered for the browser session,
+  so it survives scrolling, the quiz, and the opt-in.
+- Every funnel event beacon carries it as `ref` (next to `referrer`)
+  and inside `event_data.ref`, so your Digital Home records which
+  code each session arrived on.
+- A `checkout` CTA (Stripe payment link) gets
+  `?client_reference_id=<code>` appended, so the Stripe dashboard
+  shows the code on every payment it produced. Without a code the
+  link is untouched. `book-call` and `external-link` URLs are never
+  changed.
+- A `lead-capture` CTA (and the quiz opt-in) sends the code with the
+  lead as `custom.referred_by`.
+
+Payout is manual in v1: in Stripe, filter payments by
+`client_reference_id` (it is on each Checkout Session), total them
+per code, and pay the attendee their share. The Digital Home shows
+the code on leads and events but does not yet total commissions;
+`NOTES-affiliate.md` lists what the CRM needs for that.
 
 ## AI-enhanced results (optional, later)
 
@@ -151,6 +186,7 @@ must teach something true, with real proof only.
 | --- | --- |
 | `npm run dev` | Local dev server |
 | `npm run build` | Production build and type check |
+| `npm test` | Unit tests (referral helpers) |
 | `npm run preview` | Build and preview on the Workers runtime |
 | `npm run deploy` | Build and deploy to Cloudflare |
 

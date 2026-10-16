@@ -51,6 +51,8 @@ export interface OptInConfig {
 
 export type CtaConfig =
   | { kind: 'book-call'; url: string; label: string; note?: string }
+  /** A Stripe payment link. A visitor's `?ref=` code is appended as
+   *  client_reference_id (src/lib/referral.ts). */
   | { kind: 'checkout'; url: string; label: string; note?: string }
   | { kind: 'external-link'; url: string; label: string; note?: string }
   | { kind: 'lead-capture'; label: string; note?: string };
