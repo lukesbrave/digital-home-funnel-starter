@@ -56,10 +56,16 @@ const rule = (tone: Tone) =>
  */
 function Reveal({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [shown, setShown] = useState(() => typeof IntersectionObserver === 'undefined');
+  // Hidden on server and client alike, so the markup hydrates cleanly; the
+  // effect reveals it (at once where IntersectionObserver is missing).
+  const [shown, setShown] = useState(false);
   useEffect(() => {
     const el = ref.current;
-    if (!el || typeof IntersectionObserver === 'undefined') return;
+    if (!el) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      const id = window.setTimeout(() => setShown(true), 0);
+      return () => window.clearTimeout(id);
+    }
     const io = new IntersectionObserver((entries) => {
       if (entries.some((e) => e.isIntersecting)) { setShown(true); io.disconnect(); }
     }, { threshold: 0.05 });
