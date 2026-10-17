@@ -39,9 +39,9 @@ export function useOpenCheckout() {
 }
 
 const DEFAULTS = {
-  headline: 'Where should we send your receipt?',
-  body: 'Enter your email and we take you straight to secure checkout.',
-  buttonLabel: 'Continue to checkout',
+  headline: 'Where should your access go?',
+  body: 'Enter your email. Your access link lands there the moment you have paid.',
+  buttonLabel: 'Continue to secure checkout',
 };
 
 /** Step two for method 'post': a plain form submit, full navigation. */
