@@ -35,8 +35,8 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
         'Seven Seminars That Will Collapse Years of Financial Anxiety and Uncertainty About Your Future Into Peace of Mind, at the Exact Moment in History When That Matters Most.',
       emphasis: 'Peace of Mind',
       subheadline:
-        'Most people never become wealthy, and it has nothing to do with income or effort. It is conditioning that decides what happens to your money before you choose anything. Paul Counsel, 28 years teaching wealth psychology and the mentor who warned of 2008, shows you how to see it, break it, and start building wealth that stays. Get instant access to the full recordings and start rewiring your brain for a lifetime of wealth.',
-      buttonLabel: 'Get Access Now',
+        'Most people never become wealthy, and it has nothing to do with income or effort. It is conditioning that decides what happens to your money before you choose anything. Paul Counsel, 28 years teaching wealth psychology and the mentor who warned of 2008, shows you how to see it, break it, and start building wealth that stays. The full recordings start rewiring your brain for a lifetime of wealth.',
+      buttonLabel: 'Get Instant Access',
       microcopy: 'Live Q&A included. One payment. Yours to keep.',
       variant: 'split',
       // The big picture is a silent loop of Paul speaking; until that clip is
