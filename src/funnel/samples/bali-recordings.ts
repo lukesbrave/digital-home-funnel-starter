@@ -35,7 +35,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
         'Seven Seminars That Will Collapse Years of Financial Anxiety and Uncertainty About Your Future Into Peace of Mind, at the Exact Moment in History When That Matters Most.',
       emphasis: 'Peace of Mind',
       subheadline:
-        'Paul Counsel, the mentor who warned of the 2008 crash in his books, takes apart the conditioning that keeps money leaving you and shows you what has to change in the person holding it before it stays. At your own pace, as many times as it takes.',
+        'Most people never become wealthy, and it has nothing to do with income or effort. It is conditioning that decides what happens to your money before you choose anything. Paul Counsel, 28 years teaching wealth psychology and the mentor who warned of 2008, shows you how to see it, break it, and start building wealth that stays. Get instant access to the full recordings and start rewiring your brain for a lifetime of wealth.',
       buttonLabel: 'Yes, I want peace of mind about my future',
       microcopy: 'Live Q&A included. One payment. Yours to keep.',
       variant: 'split',
@@ -166,7 +166,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       headline: 'Everything is ready. The only thing left is your decision.',
       emphasis: 'your decision.',
       body:
-        'Here is exactly what happens next. You press the button. You enter your email, so your receipt and your access link have somewhere to go. You pay $500 once on a secure Stripe page. Your link arrives at that email as soon as the seminars are ready. There is nothing else to do and nothing else to pay.',
+        'Here is exactly what happens next. You press the button. You enter your email, so your receipt and your access link have somewhere to go. You pay $500 once on a secure Stripe page. Your access link arrives at that email the moment you have paid. There is nothing else to do and nothing else to pay.',
       cardLabel: 'Full access',
       price: '$500',
       currencyLabel: 'USD',
@@ -192,7 +192,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
         { q: 'What exactly is in it?', a: "Paul Counsel's seven seminars, in full and in order, and the live Q&A where people in your position put their own situations to him." },
         { q: "I've read the books on money psychology.", a: 'Reading about the mechanism and watching it taken apart in front of you, with your own reactions to notice while it happens, are not the same experience. The second one is what you are buying.' },
         { q: 'Will I actually watch them all?', a: 'Start with the hook. It is the one you will not be able to stop thinking about afterwards, and it decides whether you want the rest. The seminars are long because the material is, and you are not timed.' },
-        { q: 'When do I get access?', a: 'Your access link is sent to the email you check out with as soon as the seminars are ready.' },
+        { q: 'When do I get access?', a: 'The moment you check out. Your access link goes straight to the email you use.' },
         { q: 'How long do I have it for?', a: 'For as long as you want it. Nothing expires and nothing renews.' },
         { q: 'Can I share it?', a: 'Access is yours, and the person who shares your accounts. A friend who wants it needs their own.' },
         { q: 'Something else?', a: 'Reply to your receipt email and a person answers.' },
