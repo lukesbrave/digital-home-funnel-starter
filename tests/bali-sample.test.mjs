@@ -47,6 +47,14 @@ test('sells the content, not the event: no room, dates, venue or section eyebrow
   for (const s of SALES.sections) assert.equal(s.kicker, undefined, `${s.kind} has no eyebrow`);
 });
 
+test('no word used as filler: "seven" once in the hero, twice on the page', () => {
+  const hero = SALES.sections[0];
+  const heroCopy = [hero.eyebrow, hero.headline, hero.subheadline, hero.microcopy, hero.buttonLabel, hero.panel?.label, hero.panel?.caption, SALES.stickyBar.text].filter(Boolean).join(' ');
+  assert.equal((heroCopy.match(/seven/gi) ?? []).length, 1, 'the hero says seven once, in the headline');
+  const page = JSON.stringify(SALES.sections) + SALES.stickyBar.text;
+  assert.ok((page.match(/seven/gi) ?? []).length <= 2, 'seven appears at most twice on the whole page');
+});
+
 test('no partner terms and no invented proof', () => {
   for (const word of ['commission', 'partner', 'affiliate', 'payout']) assert.ok(!text.toLowerCase().includes(word), word);
   const proof = SALES.sections.find((s) => s.kind === 'proof');

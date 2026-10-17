@@ -31,14 +31,13 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
   sections: [
     {
       kind: 'hero',
-      eyebrow: 'Paul Counsel · Seven seminars',
       headline:
         'Seven Seminars That Will Collapse Years of Financial Anxiety and Uncertainty About Your Future Into Peace of Mind, at the Exact Moment in History When That Matters Most.',
       emphasis: 'Peace of Mind',
       subheadline:
-        'Seven seminars with Paul Counsel, the mentor who warned of the 2008 crash in his books, that take apart the conditioning that keeps money leaving and show you what has to change in the person holding it. Watch them in order, at your own pace, as many times as it takes.',
+        'Paul Counsel, the mentor who warned of the 2008 crash in his books, takes apart the conditioning that keeps money leaving you and shows you what has to change in the person holding it before it stays. At your own pace, as many times as it takes.',
       buttonLabel: 'Yes, I want peace of mind about my future',
-      microcopy: 'Seven seminars and a live Q&A. One payment. Yours to keep.',
+      microcopy: 'Live Q&A included. One payment. Yours to keep.',
       variant: 'split',
       // The big picture is a silent loop of Paul speaking; until that clip is
       // supplied as images/bali/paul-loop.mp4, a loop stands in over a still.
@@ -68,12 +67,12 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       headline: 'You cannot out-strategise a mechanism you cannot see.',
       emphasis: 'cannot see.',
       body:
-        'Which is why no budget, no portfolio and no plan has ever held for you longer than the feeling that made it. Across seven seminars Paul Counsel takes you down through the layers that decide what happens to your money before you have chosen anything, and back up with the capacity to choose. In order, at your own pace, and then a live Q&A where people in exactly your position put their own situations to him.',
+        'Which is why no budget, no portfolio and no plan has ever held for you longer than the feeling that made it. Paul Counsel takes you down through the layers that decide what happens to your money before you have chosen anything, and back up with the capacity to choose. In order, at your own pace, and then a live Q&A where people in exactly your position put their own situations to him.',
       image: { src: `${IMG}/andaz-studio-longtable.jpg`, alt: 'Where the seminars were taught' },
       steps: [
         { title: 'First, you see the conditioning', body: 'The value system you were handed before you were old enough to question it, and the inherited rules still quietly making your financial decisions today. You were taught to sit still and then blamed for standing still. You cannot rewrite a rule you have never noticed you are following, so the first thing that happens is noticing.' },
         { title: 'Then you name the trade', body: 'The three things you accept without noticing in exchange for sovereignty over your own experience: a frictionless life, a place to belong, the spike of reward. And the chemical that makes each one feel like your own idea. Once you can watch it running, it stops holding you the way it did.' },
-        { title: 'Then you change the person holding the money', body: 'Why it has arrived and left again your whole life, and what has to be different in you before a gain stays. Almost nobody teaches this part. It is where the seven seminars end up, and it is where everything else you have ever tried finally starts to hold.' },
+        { title: 'Then you change the person holding the money', body: 'Why it has arrived and left again your whole life, and what has to be different in you before a gain stays. Almost nobody teaches this part. It is where the teaching ends up, and it is where everything else you have ever tried finally starts to hold.' },
       ],
     },
     {
@@ -82,7 +81,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       emphasis: 'in his books.',
       body: [
         'You are not being taught by someone who read about this. Paul Counsel has taught wealth psychology for twenty-eight years, built four businesses and written five books, including the ones that saw 2008 coming before it arrived. He was in crypto in 2015 and telling the people close to him about Bitcoin in 2017, years before you heard about it from a stranger.',
-        'He does not sell a system and he will not hand you a script. What the people who have been near him longest describe is simpler and harder to buy: being close, for long enough, to someone who sees the world differently, until the way of seeing becomes your own. For seven seminars, you are that close.',
+        'He does not sell a system and he will not hand you a script. What the people who have been near him longest describe is simpler and harder to buy: being close, for long enough, to someone who sees the world differently, until the way of seeing becomes your own. Here, you are that close.',
       ],
       facts: [
         { label: 'Teaching', value: '28 years' },
@@ -98,9 +97,9 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       emphasis: 'never gives you.',
       body:
         'Live, you hear a seminar once and it is gone. Here you can stop on the sentence that lands, return to it the next morning, and sit with it until it changes something in you. That is the one advantage recorded teaching has over any seat in any room, and it is yours by default.',
-      buttonLabel: 'Yes, I want all seven seminars',
+      buttonLabel: 'Yes, I want every word of it',
       items: [
-        { label: "All seven of Paul's seminars, in full, in the order they are meant to be heard", tag: 'recorded' },
+        { label: 'Every seminar in full, in the order it is meant to be heard', tag: 'recorded' },
         { label: 'The live Q&A, where people in your position put their own situations to Paul', tag: 'recorded' },
         { label: 'Stop, rewind and return to any seminar as often as you need', tag: 'yours to keep' },
         { label: 'Watch on any device, alone or with the person who shares your accounts', tag: 'included' },
@@ -125,11 +124,11 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
     },
     {
       kind: 'value-stack',
-      headline: 'Seven seminars that change what money does around you.',
-      emphasis: 'around you.',
+      headline: 'Each one takes away a reason money leaves you.',
+      emphasis: 'money leaves you.',
       body: 'Each one in full, with the one line Paul uses to open it. Move through them.',
       image: { src: `${IMG}/andaz-studio-rounds.jpg`, alt: 'Where the seminars were taught' },
-      buttonLabel: 'Yes, I want the seven seminars',
+      buttonLabel: 'Yes, I want every one of them',
       items: [
         { label: 'A Radical New Discovery', detail: 'How your money brain is wired.', group: 'The wiring' },
         { label: 'Predictive Models', detail: 'Consciousness and the predictive nature of the forecasting brain.' },
@@ -146,7 +145,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       emphasis: 'to be ready.',
       image: { src: `${IMG}/bali-coast-dusk.jpg`, alt: 'A coastline at dusk' },
       body: [
-        'You are standing somewhere in an economic cycle right now, whether or not you have looked up to check. One of the seven seminars is about exactly where that is, what it is saying underneath the headlines, and how to position before it turns rather than after everyone agrees it has.',
+        'You are standing somewhere in an economic cycle right now, whether or not you have looked up to check. One of the seminars is about exactly where that is, what it is saying underneath the headlines, and how to position before it turns rather than after everyone agrees it has.',
         'Every month you spend inside the old pattern is a month the model of you gets sharper, the nudges get better timed, and the window to move before the turn gets narrower. The seminars will still be here next month. You will be a month further in.',
         'And the mechanism does not pause while you think about it. It is running now, in the small voice telling you that you will come back to this later. Notice that voice. You are about to find out what it is made of.',
       ],
@@ -168,7 +167,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       emphasis: 'your decision.',
       body:
         'Here is exactly what happens next. You press the button. You enter your email, so your receipt and your access link have somewhere to go. You pay $500 once on a secure Stripe page. Your link arrives at that email as soon as the seminars are ready. There is nothing else to do and nothing else to pay.',
-      cardLabel: 'Seven seminars',
+      cardLabel: 'Full access',
       price: '$500',
       currencyLabel: 'USD',
       priceNote: 'One time',
@@ -192,7 +191,7 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
       items: [
         { q: 'What exactly is in it?', a: "Paul Counsel's seven seminars, in full and in order, and the live Q&A where people in your position put their own situations to him." },
         { q: "I've read the books on money psychology.", a: 'Reading about the mechanism and watching it taken apart in front of you, with your own reactions to notice while it happens, are not the same experience. The second one is what you are buying.' },
-        { q: 'Will I actually watch seven seminars?', a: 'Start with the hook. It is the one you will not be able to stop thinking about afterwards, and it decides whether you want the rest. The seminars are long because the material is, and you are not timed.' },
+        { q: 'Will I actually watch them all?', a: 'Start with the hook. It is the one you will not be able to stop thinking about afterwards, and it decides whether you want the rest. The seminars are long because the material is, and you are not timed.' },
         { q: 'When do I get access?', a: 'Your access link is sent to the email you check out with as soon as the seminars are ready.' },
         { q: 'How long do I have it for?', a: 'For as long as you want it. Nothing expires and nothing renews.' },
         { q: 'Can I share it?', a: 'Access is yours, and the person who shares your accounts. A friend who wants it needs their own.' },
@@ -201,13 +200,13 @@ export const SALES_BALI_RECORDINGS: SalesPageConfig = {
     },
     {
       kind: 'final-cta',
-      body: 'P.S. Seven seminars · A live Q&A · One payment · Yours to keep',
+      body: 'P.S. Every seminar in full · A live Q&A · One payment · Yours to keep',
       headline: 'The pattern ends where you decide it ends.',
       emphasis: 'you decide it ends.',
       buttonLabel: 'Yes, I want peace of mind about my future',
       image: { src: `${IMG}/bali-scenery.jpg`, alt: 'A coastline at golden hour' },
     },
   ],
-  stickyBar: { text: 'Seven seminars with Paul Counsel', buttonLabel: 'Yes, I want in' },
+  stickyBar: { text: 'Paul Counsel', buttonLabel: 'Yes, I want in' },
   footer: 'BraveBrand',
 };
