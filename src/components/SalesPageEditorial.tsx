@@ -572,9 +572,6 @@ function Section({ section }: { section: SalesSection }) {
                   <div className="relative aspect-square w-full overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-                    <BlackPanel className="absolute bottom-0 left-0 h-[96px] w-[200px]">
-                      <span className="absolute inset-x-5 bottom-4 block text-[9px] uppercase tracking-[0.16em] opacity-80">{section.image.alt}</span>
-                    </BlackPanel>
                   </div>
                 </Reveal>
               )}
