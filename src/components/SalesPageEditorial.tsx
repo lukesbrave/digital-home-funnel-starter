@@ -458,6 +458,83 @@ function ExpandingRow({ items }: { items: { label: string; detail?: string; grou
   );
 }
 
+/**
+ * Up to ten video testimonials as a grid of portrait cards. A card shows the
+ * poster (or the clip's opening frame), a play mark, the name, role and one
+ * quote line; tapping it opens a player with sound and next / previous.
+ */
+type Testimonial = { src: string; poster?: string; name: string; role?: string; quote?: string };
+function VideoTestimonials({ videos, tone }: { videos: Testimonial[]; tone: Tone }) {
+  const list = videos.slice(0, 10);
+  const [open, setOpen] = useState<number | null>(null);
+  useEffect(() => {
+    if (open === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(null);
+      if (e.key === 'ArrowRight') setOpen((i) => (i === null ? i : (i + 1) % list.length));
+      if (e.key === 'ArrowLeft') setOpen((i) => (i === null ? i : (i - 1 + list.length) % list.length));
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, list.length]);
+  if (list.length === 0) return null;
+  const current = open === null ? null : list[open];
+  return (
+    <div className="mt-[clamp(3rem,5.5vw,5.5rem)]">
+      <ul className="grid grid-cols-5 gap-4 max-[1100px]:grid-cols-3 max-[809px]:grid-cols-2 max-[809px]:gap-3">
+        {list.map((v, i) => (
+          <li key={v.src + i}>
+            <button
+              type="button"
+              onClick={() => setOpen(i)}
+              aria-label={`Play ${v.name}'s story`}
+              className="group block w-full cursor-pointer text-left"
+            >
+              <span className="relative block aspect-[4/5] w-full overflow-hidden bg-[#151713]">
+                {v.poster ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={v.poster} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" loading="lazy" />
+                ) : (
+                  <video src={`${v.src}#t=0.5`} preload="metadata" muted playsInline aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+                )}
+                <span className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,7,0),rgba(8,9,7,.55))]" aria-hidden />
+                <span className="absolute bottom-3 left-3 flex h-9 w-9 items-center justify-center rounded-full border border-white/70 text-[10px] text-white transition-colors group-hover:bg-white group-hover:text-black" aria-hidden>▶</span>
+              </span>
+              <span className="mt-3 block text-[11px] font-semibold uppercase tracking-[0.14em]">{v.name}</span>
+              {v.role && <span className={`mt-1 block ${T_META} ${muted(tone)}`}>{v.role}</span>}
+              {v.quote && <span className="mt-2 block text-[13px] italic leading-[1.45]" style={display}>“{v.quote}”</span>}
+            </button>
+          </li>
+        ))}
+      </ul>
+      {current && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/85 p-5 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${current.name}'s story`}
+          onClick={() => setOpen(null)}
+        >
+          <div className="w-full max-w-[520px]" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between pb-4 text-[#f2eee7]">
+              <span className="text-[10px] uppercase tracking-[0.2em] opacity-80">{current.name}{current.role ? ` · ${current.role}` : ''}</span>
+              <button type="button" onClick={() => setOpen(null)} className="cursor-pointer text-[10px] uppercase tracking-[0.2em] opacity-70 hover:opacity-100">Close</button>
+            </div>
+            <video key={current.src} src={current.src} poster={current.poster} controls autoPlay playsInline className="max-h-[75vh] w-full bg-black" />
+            {list.length > 1 && (
+              <div className="mt-4 flex items-center justify-between text-[#f2eee7]">
+                <button type="button" onClick={() => setOpen(((open ?? 0) - 1 + list.length) % list.length)} className="cursor-pointer text-[10px] uppercase tracking-[0.2em] opacity-70 hover:opacity-100">← Previous</button>
+                <span className="text-[10px] tracking-[0.2em] opacity-60">{(open ?? 0) + 1} / {list.length}</span>
+                <button type="button" onClick={() => setOpen(((open ?? 0) + 1) % list.length)} className="cursor-pointer text-[10px] uppercase tracking-[0.2em] opacity-70 hover:opacity-100">Next →</button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** A pull quote in the column: the line the reader is meant to stop on. */
 function PullLine({ children }: { children: React.ReactNode }) {
   return (
@@ -664,6 +741,13 @@ function Section({ section }: { section: SalesSection }) {
               ))}
             </div>
           </div>
+          {section.videos && section.videos.length > 0 && (
+            <div className={WIDE}>
+              <Reveal>
+                <VideoTestimonials videos={section.videos} tone={tone} />
+              </Reveal>
+            </div>
+          )}
         </div>
       );
     }

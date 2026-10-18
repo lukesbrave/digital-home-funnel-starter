@@ -67,3 +67,14 @@ test('hero and closing carry media from the photo bank', () => {
   assert.match(hero.media.video ?? hero.panel?.video ?? '', /\.mp4$/, 'a loop plays in the hero, full-bleed or in the panel');
   assert.match(SALES.sections.at(-1).image.src, /^\/images\/bali\//);
 });
+
+test('video testimonials: at most ten, real names only, never stand-ins', () => {
+  const proof = SALES.sections.find((s) => s.kind === 'proof');
+  const videos = proof.videos ?? [];
+  assert.ok(videos.length <= 10, 'the grid holds ten');
+  for (const v of videos) {
+    assert.ok(v.src && v.name, 'every video has a file and a name');
+    assert.ok(!/^Testimonial \d+$/.test(v.name), 'no stand-in names ship');
+    assert.ok(!/manifest/i.test(`${v.role ?? ''} ${v.quote ?? ''}`), 'no placeholder lines ship');
+  }
+});

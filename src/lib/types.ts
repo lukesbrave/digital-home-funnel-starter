@@ -179,7 +179,14 @@ export type SalesSection =
       image?: SalesImage;
       total?: { label: string; value: string }; buttonLabel?: string }
   | { kind: 'proof'; kicker?: string; headline: string; emphasis?: string;
-      quotes: { quote: string; who: string; role?: string }[] }
+      quotes: { quote: string; who: string; role?: string }[];
+      /**
+       * Video testimonials, up to ten (editorial layout). Real people only,
+       * each with consent; the grid is hidden when the list is empty.
+       * `poster` is a still shown before play; without one the first frame
+       * is used. `quote` is one sentence printed exactly as given.
+       */
+      videos?: { src: string; poster?: string; name: string; role?: string; quote?: string }[] }
   | { kind: 'pricing'; kicker?: string; headline: string; emphasis?: string; body?: string;
       price: string; priceNote?: string; buttonLabel: string; guarantee?: string;
       /** Small label on the price card (editorial), e.g. "Option 01". */
