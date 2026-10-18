@@ -500,9 +500,8 @@ function VideoTestimonials({ videos, tone }: { videos: Testimonial[]; tone: Tone
                 <span className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,7,0),rgba(8,9,7,.55))]" aria-hidden />
                 <span className="absolute bottom-3 left-3 flex h-9 w-9 items-center justify-center rounded-full border border-white/70 text-[10px] text-white transition-colors group-hover:bg-white group-hover:text-black" aria-hidden>▶</span>
               </span>
-              <span className="mt-3 block text-[11px] font-semibold uppercase tracking-[0.14em]">{v.name}</span>
-              {v.role && <span className={`mt-1 block ${T_META} ${muted(tone)}`}>{v.role}</span>}
-              {v.quote && <span className="mt-2 block text-[13px] italic leading-[1.45]" style={display}>“{v.quote}”</span>}
+              {v.quote && <span className="mt-3 block text-[14px] italic leading-[1.45]" style={display}>“{v.quote}”</span>}
+              <span className={`mt-2 block text-[13px] leading-[1.4] ${muted(tone)}`}>{v.name}{v.role ? `, ${v.role}` : ''}</span>
             </button>
           </li>
         ))}
@@ -517,7 +516,7 @@ function VideoTestimonials({ videos, tone }: { videos: Testimonial[]; tone: Tone
         >
           <div className="w-full max-w-[520px]" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between pb-4 text-[#f2eee7]">
-              <span className="text-[10px] uppercase tracking-[0.2em] opacity-80">{current.name}{current.role ? ` · ${current.role}` : ''}</span>
+              <span className="text-[13px] opacity-80">{current.name}{current.role ? `, ${current.role}` : ''}</span>
               <button type="button" onClick={() => setOpen(null)} className="cursor-pointer text-[10px] uppercase tracking-[0.2em] opacity-70 hover:opacity-100">Close</button>
             </div>
             <video key={current.src} src={current.src} poster={current.poster} controls autoPlay playsInline className="max-h-[75vh] w-full bg-black" />
