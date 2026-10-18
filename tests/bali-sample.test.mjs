@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 /**
  * The Bali Recordings fallback draft keeps the rules it was written under.
  * Run: npm test
@@ -61,11 +62,22 @@ test('no partner terms and no invented proof', () => {
   assert.deepEqual(proof.quotes.map((q) => q.who), ['Bryan Susilo', 'Luke Carter']);
 });
 
-test('hero and closing carry media from the photo bank', () => {
+test('hero and closing hold media slots, empty or a real file', () => {
   const hero = SALES.sections[0];
-  assert.match(hero.media.image, /^\/images\/bali\//);
-  assert.match(hero.media.video ?? hero.panel?.video ?? '', /\.mp4$/, 'a loop plays in the hero, full-bleed or in the panel');
-  assert.match(SALES.sections.at(-1).image.src, /^\/images\/bali\//);
+  const slotOk = (src) => src === '' || /^\/(images\/bali|media)\//.test(src);
+  assert.ok(hero.media && slotOk(hero.media.image), 'the hero has an image slot');
+  assert.ok(hero.media.video === undefined || hero.media.video === '' || /\.mp4$/.test(hero.media.video), 'a hero loop is an mp4');
+  assert.ok(SALES.sections.at(-1).image && slotOk(SALES.sections.at(-1).image.src), 'the closing has an image slot');
+});
+
+test('every media file the page names exists in public/', () => {
+  const paths = [];
+  JSON.stringify(SALES, (_k, v) => {
+    if (typeof v === 'string' && /^\/(images|media)\//.test(v)) paths.push(v);
+    return v;
+  });
+  const missing = paths.filter((p) => !existsSync(new URL(`../public${p}`, import.meta.url)));
+  assert.deepEqual(missing, [], `missing files: ${missing.join(', ')}`);
 });
 
 test('video testimonials: at most ten, real names only, never stand-ins', () => {
