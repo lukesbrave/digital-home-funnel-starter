@@ -32,6 +32,18 @@ const T_BODY_SM = 'text-[clamp(0.95rem,1.1vw,1.03rem)] leading-[1.8]';
 const T_META = 'text-[10px] uppercase tracking-[0.2em]';
 const WIDE = 'mx-auto max-w-[1380px]';
 
+/* Empty media slots. A slot whose src is '' is waiting for a real file.
+   In development (the localhost build) it shows as a dark grey block of the
+   same size, so the layout reads as a page being filled in. In a production
+   build an empty slot is treated as absent, so a grey block never ships. */
+const SHOW_EMPTY_SLOTS = process.env.NODE_ENV !== 'production';
+const slot = (src?: string) => Boolean(src) || SHOW_EMPTY_SLOTS;
+function Pic({ src, alt = '', className = '', loading }: { src?: string; alt?: string; className?: string; loading?: 'lazy' | 'eager' }) {
+  if (!src) return SHOW_EMPTY_SLOTS ? <span aria-hidden data-empty-slot className={`${className} block bg-[#3a3936]`} /> : null;
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={src} alt={alt} className={className} loading={loading} />;
+}
+
 /* Grounds. Cream and claret come from the theme; the photo sections sit on
    near-black like the event page. Written as literal class strings because
    Tailwind only generates classes it can read at build time. */
@@ -179,11 +191,10 @@ function SplitHero({ section }: { section: Extract<SalesSection, { kind: 'hero' 
             </a>
           )}
         </div>
-        {section.inset && (
+        {section.inset && slot(section.inset.src) && (
           <div className="rise rise-4 mt-10 w-[min(240px,60%)]">
             <div className="relative aspect-[1.6] w-full overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={section.inset.src} alt={section.inset.alt} className="absolute inset-0 h-full w-full object-cover" />
+              <Pic src={section.inset.src} alt={section.inset.alt} className="absolute inset-0 h-full w-full object-cover" />
             </div>
           </div>
         )}
@@ -192,19 +203,18 @@ function SplitHero({ section }: { section: Extract<SalesSection, { kind: 'hero' 
         {media && (media.video && !reduceMotion ? (
           <video src={media.video} poster={media.image} autoPlay muted loop playsInline preload="auto" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
         ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={media.image} alt={media.alt ?? ''} className="absolute inset-0 h-full w-full object-cover" />
+          <Pic src={media.image} alt={media.alt ?? ''} className="absolute inset-0 h-full w-full object-cover" />
         ))}
-        {panel && (
+        {panel && (!panel.preview || slot(panel.preview.video)) && (
           /* A small black rectangle in the corner. On hover it grows and a
              thumbnail of the clip fades in, so it reads as a video before the
              click. Touch screens have no hover, so under 810px the thumbnail
              is always visible at the small size. */
           <button
             type="button"
-            onClick={() => panel.preview && setPreviewOpen(true)}
+            onClick={() => panel.preview?.video && setPreviewOpen(true)}
             aria-label={panel.preview ? `Play a preview: ${panel.label ?? 'clip'}` : panel.label}
-            className={`group absolute bottom-0 right-0 h-[120px] w-[220px] overflow-hidden bg-[#0f100e] text-left text-[#f2eee7] transition-[width,height] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:h-[240px] hover:w-[360px] max-[809px]:h-[110px] max-[809px]:w-[190px] ${panel.preview ? 'cursor-pointer' : 'cursor-default'}`}
+            className={`group absolute bottom-0 right-0 h-[120px] w-[220px] overflow-hidden bg-[#0f100e] text-left text-[#f2eee7] transition-[width,height] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:h-[240px] hover:w-[360px] max-[809px]:h-[110px] max-[809px]:w-[190px] ${panel.preview?.video ? 'cursor-pointer' : 'cursor-default'}`}
           >
             {panel.preview?.poster && (
               <>
@@ -228,7 +238,7 @@ function SplitHero({ section }: { section: Extract<SalesSection, { kind: 'hero' 
           </button>
         )}
       </div>
-      {panel?.preview && previewOpen && (
+      {panel?.preview?.video && previewOpen && (
         <div
           className="fixed inset-0 z-[60] flex items-center justify-center bg-black/85 p-5 backdrop-blur-sm"
           role="dialog"
@@ -260,8 +270,7 @@ function Hero({ section }: { section: Extract<SalesSection, { kind: 'hero' }> })
           {media.video && !reduceMotion ? (
             <video src={media.video} poster={media.image} autoPlay muted loop playsInline preload="auto" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
           ) : (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={media.image} alt={media.alt ?? ''} className="absolute inset-0 h-full w-full object-cover" />
+            <Pic src={media.image} alt={media.alt ?? ''} className="absolute inset-0 h-full w-full object-cover" />
           )}
         </div>
       )}
@@ -464,8 +473,9 @@ function ExpandingRow({ items }: { items: { label: string; detail?: string; grou
  * quote line; tapping it opens a player with sound and next / previous.
  */
 type Testimonial = { src: string; poster?: string; name: string; role?: string; quote?: string };
-function VideoTestimonials({ videos, tone }: { videos: Testimonial[]; tone: Tone }) {
+function VideoTestimonials({ videos, slots = 0, tone }: { videos: Testimonial[]; slots?: number; tone: Tone }) {
   const list = videos.slice(0, 10);
+  const empty = SHOW_EMPTY_SLOTS ? Math.max(0, Math.min(10, slots) - list.length) : 0;
   const [open, setOpen] = useState<number | null>(null);
   useEffect(() => {
     if (open === null) return;
@@ -477,7 +487,7 @@ function VideoTestimonials({ videos, tone }: { videos: Testimonial[]; tone: Tone
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [open, list.length]);
-  if (list.length === 0) return null;
+  if (list.length + empty === 0) return null;
   const current = open === null ? null : list[open];
   return (
     <div className="mt-[clamp(3rem,5.5vw,5.5rem)]">
@@ -503,6 +513,11 @@ function VideoTestimonials({ videos, tone }: { videos: Testimonial[]; tone: Tone
               {v.quote && <span className="mt-3 block text-[14px] italic leading-[1.45]" style={display}>“{v.quote}”</span>}
               <span className={`mt-2 block text-[13px] leading-[1.4] ${muted(tone)}`}>{v.name}{v.role ? `, ${v.role}` : ''}</span>
             </button>
+          </li>
+        ))}
+        {Array.from({ length: empty }, (_, i) => (
+          <li key={`empty-${i}`} aria-hidden data-empty-slot>
+            <span className="block aspect-[4/5] w-full bg-[#3a3936]" />
           </li>
         ))}
       </ul>
@@ -574,11 +589,10 @@ function Section({ section }: { section: SalesSection }) {
                 </div>
               </Reveal>
             )}
-            {section.image && (
+            {section.image && slot(section.image.src) && (
               <Reveal>
                 <div className="relative aspect-[2.1] w-full overflow-hidden max-[809px]:aspect-[1.2]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                  <Pic src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
                   {section.image.caption && (
                     <BlackPanel className="absolute bottom-0 right-0 h-[110px] w-[240px]">
                       <span className="absolute inset-x-5 bottom-4 block text-[9px] leading-[1.6] opacity-80">{section.image.caption}</span>
@@ -600,9 +614,8 @@ function Section({ section }: { section: SalesSection }) {
         <div className={`${toneClass[tone]} grid grid-cols-[0.42fr_0.58fr] max-[809px]:grid-cols-1`}>
           <div className="relative max-[809px]:min-h-[50vh]">
             <div className="sticky top-0 h-screen max-[809px]:relative max-[809px]:h-[50vh]">
-              {section.image && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              {section.image && slot(section.image.src) && (
+                <Pic src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
               )}
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,24,20,.15),rgba(23,24,20,.85))]" />
               <div className="absolute inset-x-8 bottom-10 max-[809px]:inset-x-5 max-[809px]:bottom-6">
@@ -643,11 +656,10 @@ function Section({ section }: { section: SalesSection }) {
         <div className={`${toneClass[tone]} ${SECTION}`}>
           <div className={WIDE}>
             <div className="grid grid-cols-[0.4fr_0.6fr] items-center gap-[6vw] max-[809px]:grid-cols-1 max-[809px]:gap-10">
-              {section.image && (
+              {section.image && slot(section.image.src) && (
                 <Reveal>
                   <div className="relative aspect-square w-full overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                    <Pic src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
                   </div>
                 </Reveal>
               )}
@@ -740,10 +752,10 @@ function Section({ section }: { section: SalesSection }) {
               ))}
             </div>
           </div>
-          {section.videos && section.videos.length > 0 && (
+          {((section.videos?.length ?? 0) > 0 || (SHOW_EMPTY_SLOTS && (section.videoSlots ?? 0) > 0)) && (
             <div className={WIDE}>
               <Reveal>
-                <VideoTestimonials videos={section.videos} tone={tone} />
+                <VideoTestimonials videos={section.videos ?? []} slots={section.videoSlots} tone={tone} />
               </Reveal>
             </div>
           )}
@@ -756,10 +768,9 @@ function Section({ section }: { section: SalesSection }) {
     case 'value-stack': {
       return (
         <div className="relative overflow-hidden bg-[#151713] text-[#f2eee7]">
-          {section.image && (
+          {section.image && slot(section.image.src) && (
             <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              <Pic src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,7,.72),rgba(8,9,7,.35)_45%,rgba(8,9,7,.7))]" />
             </>
           )}
@@ -793,10 +804,9 @@ function Section({ section }: { section: SalesSection }) {
     case 'scarcity': {
       return (
         <div className={`relative overflow-hidden bg-[#151713] text-[#f2eee7] ${SECTION}`}>
-          {section.image && (
+          {section.image && slot(section.image.src) && (
             <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              <Pic src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,7,.7),rgba(8,9,7,.55)_50%,rgba(8,9,7,.8))]" />
             </>
           )}
@@ -935,9 +945,8 @@ function Section({ section }: { section: SalesSection }) {
       return (
         <div className="grid grid-cols-[0.55fr_0.45fr] max-[809px]:grid-cols-1">
           <div className="relative min-h-[70vh] bg-[#151713] max-[809px]:min-h-[50vh]">
-            {section.image && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+            {section.image && slot(section.image.src) && (
+              <Pic src={section.image.src} alt={section.image.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
             )}
           </div>
           <div className={`flex items-center justify-center bg-[var(--surface)] text-[var(--ink)] ${SECTION}`}>

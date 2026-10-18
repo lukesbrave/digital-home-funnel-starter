@@ -186,7 +186,10 @@ export type SalesSection =
        * `poster` is a still shown before play; without one the first frame
        * is used. `quote` is one sentence printed exactly as given.
        */
-      videos?: { src: string; poster?: string; name: string; role?: string; quote?: string }[] }
+      videos?: { src: string; poster?: string; name: string; role?: string; quote?: string }[];
+      /** Testimonial slots to hold open while clips arrive. Unfilled slots
+       *  show as grey cards on localhost only; production shows `videos` alone. */
+      videoSlots?: number }
   | { kind: 'pricing'; kicker?: string; headline: string; emphasis?: string; body?: string;
       price: string; priceNote?: string; buttonLabel: string; guarantee?: string;
       /** Small label on the price card (editorial), e.g. "Option 01". */
